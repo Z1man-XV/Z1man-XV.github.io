@@ -1,11 +1,12 @@
-// 创建场景
+//=======================
+// Three.js 初始化
+//=======================
+
 
 const scene =
 new THREE.Scene();
 
 
-
-// 摄像机
 
 const camera =
 new THREE.PerspectiveCamera(
@@ -20,17 +21,17 @@ window.innerWidth/window.innerHeight,
 camera.position.set(
 0,
 8,
-12
+14
 );
 
 
 
-// 渲染器
 
 const renderer =
 new THREE.WebGLRenderer({
 antialias:true
 });
+
 
 
 renderer.setSize(
@@ -39,11 +40,11 @@ window.innerHeight
 );
 
 
+
 document
 .getElementById("scene")
-.appendChild(
-renderer.domElement
-);
+.appendChild(renderer.domElement);
+
 
 
 
@@ -64,45 +65,50 @@ scene.add(light);
 
 
 
-// =================
+//=======================
 // 人物占位
-// =================
+// 后面换player.glb
+//=======================
 
 
-const body =
+const player =
 new THREE.Mesh(
 
 new THREE.BoxGeometry(
 1,
-2,
-0.5
+2.5,
+1
 ),
 
 
 new THREE.MeshStandardMaterial({
+
 color:0xffffff
+
 })
 
 );
 
 
 
-body.position.y=-1;
+player.position.y=-1;
 
 
-scene.add(body);
+scene.add(player);
 
 
 
 
 
-// =================
-// U盘系统
-// =================
+
+//=======================
+// USB 扇形系统
+//=======================
 
 
-let usbGroup =
+const usbGroup =
 new THREE.Group();
+
 
 
 scene.add(usbGroup);
@@ -112,8 +118,14 @@ scene.add(usbGroup);
 let usbList=[];
 
 
+const usbNumber=5;
 
-for(let i=0;i<5;i++){
+
+const radius=6;
+
+
+
+for(let i=0;i<usbNumber;i++){
 
 
 let usb =
@@ -122,12 +134,14 @@ new THREE.Mesh(
 new THREE.BoxGeometry(
 1,
 2,
-0.3
+0.35
 ),
 
 
 new THREE.MeshStandardMaterial({
-color:0x555555
+
+color:0x777777
+
 })
 
 );
@@ -135,19 +149,19 @@ color:0x555555
 
 
 let angle =
-(i-2)*0.8;
+(i-2)*25*Math.PI/180;
 
 
 
-usb.position.set(
+usb.position.x =
+Math.sin(angle)*radius;
 
-Math.sin(angle)*5,
 
-3,
+usb.position.z =
+Math.cos(angle)*radius-3;
 
-Math.cos(angle)*2-5
 
-);
+usb.position.y=3;
 
 
 
@@ -158,89 +172,69 @@ usb.rotation.y=angle;
 usbGroup.add(usb);
 
 
+
 usbList.push(usb);
 
 
-}
-
-
-
-
-
-
-let current=2;
-
-
-
-function selectUSB(index){
-
-
-usbList.forEach(
-(u,i)=>{
-
-
-let target =
-(i-index)*0.8;
-
-
-u.position.x =
-Math.sin(target)*5;
-
-
-u.position.z =
-Math.cos(target)*2-5;
-
-
-
-u.rotation.y =
-target;
-
 
 }
 
-);
+
+
+
+
+// 当前编号
+
+let current=0;
+
+
+
+let targetRotation=0;
+
+
+
+
+//=======================
+// 切换
+//=======================
+
+
+function changeUSB(direction){
+
+
+current += direction;
+
+
+
+if(current<0)
+current=usbNumber-1;
+
+
+if(current>=usbNumber)
+current=0;
+
+
+
+targetRotation =
+-current*25*Math.PI/180;
 
 
 
 document
-.getElementById("content")
+.getElementById("gameTitle")
 .innerHTML=
-"GAME "+(index+1);
+"GAME 0"+(current+1);
 
 
 
-overlayShow(index);
-
-
-}
-
-
-
-
-
-function overlayShow(i){
-
-
-let overlay =
-document.getElementById(
-"overlay"
-);
+document
+.getElementById("gameText")
+.innerHTML=
+"Portfolio Project "+(current+1);
 
 
 
-overlay.style.backgroundImage=
-"url('assets/images/game"+i+".png')";
-
-
-overlay.style.opacity=
-0.5;
-
-
-setTimeout(()=>{
-
-overlay.style.opacity=0;
-
-},1000);
+showImage(current);
 
 
 }
@@ -254,17 +248,11 @@ document
 .onclick=()=>{
 
 
-current--;
-
-
-if(current<0)
-current=4;
-
-
-selectUSB(current);
+changeUSB(-1);
 
 
 }
+
 
 
 
@@ -273,14 +261,47 @@ document
 .onclick=()=>{
 
 
-current++;
+changeUSB(1);
 
 
-if(current>4)
-current=0;
+}
 
 
-selectUSB(current);
+
+
+
+//=======================
+// 图片覆盖
+//=======================
+
+
+function showImage(i){
+
+
+let overlay =
+document.getElementById(
+"overlay"
+);
+
+
+
+overlay.style.backgroundImage=
+"url(assets/images/game"+(i+1)+".png)";
+
+
+
+overlay.style.opacity=.5;
+
+
+
+setTimeout(()=>{
+
+
+overlay.style.opacity=0;
+
+
+},800);
+
 
 
 }
@@ -290,9 +311,10 @@ selectUSB(current);
 
 
 
-// =====================
-// 滚动控制镜头
-// =====================
+
+//=======================
+// 滚动改变镜头
+//=======================
 
 
 
@@ -301,14 +323,14 @@ window.addEventListener(
 ()=>{
 
 
-let p=
+let scroll =
 window.scrollY/
 (document.body.scrollHeight-window.innerHeight);
 
 
 
-camera.position.y=
-8-16*p;
+camera.position.y =
+8-scroll*16;
 
 
 
@@ -328,7 +350,10 @@ camera.lookAt(
 
 
 
+
+//=======================
 // 动画
+//=======================
 
 
 function animate(){
@@ -340,7 +365,8 @@ animate
 
 
 
-usbGroup.rotation.y+=0.002;
+usbGroup.rotation.y +=
+(targetRotation-usbGroup.rotation.y)*0.08;
 
 
 
@@ -348,6 +374,7 @@ renderer.render(
 scene,
 camera
 );
+
 
 
 }
@@ -360,11 +387,13 @@ animate();
 
 
 
+
 window.onresize=()=>{
 
 
 camera.aspect=
-window.innerWidth/window.innerHeight;
+window.innerWidth/
+window.innerHeight;
 
 
 camera.updateProjectionMatrix();
@@ -374,6 +403,7 @@ renderer.setSize(
 window.innerWidth,
 window.innerHeight
 );
+
 
 
 }
