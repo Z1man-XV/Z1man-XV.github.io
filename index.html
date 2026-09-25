@@ -1,387 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
-<meta charset="UTF-8">
+<title>Zeman | Portfolio</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Z1man Portfolio</title>
-
-
-<style>
-
-body {
-
-    margin:0;
-
-    background:#050505;
-
-    color:white;
-
-    font-family:Arial, sans-serif;
-
-    overflow:hidden;
-
-}
-
-
-
-/* 网站标题 */
-
-.title {
-
-    position:absolute;
-
-    top:40px;
-
-    width:100%;
-
-    text-align:center;
-
-    font-size:40px;
-
-    letter-spacing:8px;
-
-}
-
-
-
-/* 副标题 */
-
-.subtitle {
-
-    position:absolute;
-
-    top:100px;
-
-    width:100%;
-
-    text-align:center;
-
-    color:#888;
-
-}
-
-
-
-/* 中央区域 */
-
-.world {
-
-
-    width:100vw;
-
-    height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    position:relative;
-
-}
-
-
-
-/* 人物 */
-
-.character {
-
-
-    width:220px;
-
-    height:320px;
-
-    background:#222;
-
-    border:2px solid #555;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    color:#777;
-
-    z-index:5;
-
-
-}
-
-
-
-/* 插槽 */
-
-.slot {
-
-
-    position:absolute;
-
-    width:120px;
-
-    height:60px;
-
-    border:2px solid cyan;
-
-    background:#111;
-
-    box-shadow:
-
-    0 0 20px cyan;
-
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-
-    cursor:pointer;
-
-    transition:0.3s;
-
-
-}
-
-
-
-.slot:hover {
-
-
-    transform:scale(1.15);
-
-    background:#003333;
-
-
-}
-
-
-
-/* 五个位置 */
-
-
-.slot1 {
-
-    top:25%;
-
-}
-
-
-
-.slot2 {
-
-    left:25%;
-
-    top:40%;
-
-}
-
-
-.slot3 {
-
-
-    right:25%;
-
-    top:40%;
-
-}
-
-
-.slot4 {
-
-
-    left:35%;
-
-    bottom:25%;
-
-
-}
-
-
-.slot5 {
-
-
-    right:35%;
-
-    bottom:25%;
-
-}
-
-
-
-
-/* 当前选择 */
-
-.info {
-
-
-    position:absolute;
-
-    bottom:80px;
-
-    width:100%;
-
-    text-align:center;
-
-}
-
-
-
-#selected {
-
-
-    font-size:25px;
-
-    color:#00ffff;
-
-}
-
-
-
-/* 按钮 */
-
-
-button {
-
-
-    margin-top:20px;
-
-    padding:15px 50px;
-
-
-    background:black;
-
-    color:white;
-
-
-    border:2px solid cyan;
-
-
-    cursor:pointer;
-
-
-    font-size:18px;
-
-
-}
-
-
-
-button:hover {
-
-
-    background:cyan;
-
-    color:black;
-
-
-}
-
-
-</style>
-
+<link rel="stylesheet" href="style.css">
 
 </head>
-
 
 
 <body>
 
 
+<div id="portfolio">
+
+
+<!-- 标题 -->
 
 <div class="title">
-
-Z1MAN PORTFOLIO
-
+Zeman | Portfolio
 </div>
 
 
 
-<div class="subtitle">
+<!-- 中央人物 -->
 
-INSERT MEMORY MODULE TO ENTER MY WORLD
-
-</div>
+<div id="scene"></div>
 
 
 
-<div class="world">
-
-
-
-<div class="slot slot1" onclick="selectGame('GAME PROJECT 01')">
-
-MODULE 01
-
-</div>
-
-
-<div class="slot slot2" onclick="selectGame('GAME PROJECT 02')">
-
-MODULE 02
-
-</div>
-
-
-
-<div class="slot slot3" onclick="selectGame('GAME PROJECT 03')">
-
-MODULE 03
-
-</div>
-
-
-
-<div class="slot slot4" onclick="selectGame('GAME PROJECT 04')">
-
-MODULE 04
-
-</div>
-
-
-
-<div class="slot slot5" onclick="selectGame('GAME PROJECT 05')">
-
-MODULE 05
-
-</div>
-
-
-
-
-<div class="character">
-
-YOUR CHARACTER
-
-</div>
-
-
-
-</div>
-
-
-
+<!-- U盘内容 -->
 
 <div class="info">
 
-
-<div id="selected">
-
-SELECT MODULE
+<div id="content">
+GAME 01
+</div>
 
 </div>
 
 
-<button>
+<!-- 图片覆盖 -->
 
-ENTER WORLD
+<div id="overlay"></div>
 
+
+
+<!-- 左右按钮 -->
+
+<button id="left">
+◀
+</button>
+
+
+<button id="right">
+▶
 </button>
 
 
@@ -389,22 +63,17 @@ ENTER WORLD
 
 
 
-
-
-<script>
-
-
-function selectGame(name){
-
-
-document.getElementById("selected").innerHTML=name;
-
-
-}
-
-
+<script src="
+https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
 </script>
 
+
+<script src="
+https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js">
+</script>
+
+
+<script src="script.js"></script>
 
 
 </body>
