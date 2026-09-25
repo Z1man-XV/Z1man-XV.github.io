@@ -95,15 +95,15 @@ const screen =
 new THREE.Mesh(
 
     new THREE.BoxGeometry(
-        4,
-        2.5,
-        0.3
+        5,
+        3,
+        0.5
     ),
 
 
     new THREE.MeshBasicMaterial({
 
-        color:0x222222
+        color:0x00ff00
 
     })
 
@@ -206,8 +206,7 @@ for(let i=0;i<usbCount;i++){
 
         new THREE.MeshStandardMaterial({
 
-            color:
-            0xaaaaaa
+            color:0xff0000
 
 
         })
