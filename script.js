@@ -1,42 +1,43 @@
-// =====================
-// 初始化
-// =====================
+// =================================
+// Zeman Portfolio 3D Space
+// =================================
 
 
-const scene =
-new THREE.Scene();
+// ---------- Scene ----------
+
+const scene = new THREE.Scene();
 
 
 
-const camera =
-new THREE.PerspectiveCamera(
-45,
-window.innerWidth/window.innerHeight,
-0.1,
-1000
+const camera = new THREE.PerspectiveCamera(
+    45,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
 );
 
 
 
-// 摄像机
-
+// 摄像机位置
 camera.position.set(
-0,
-8,
-15
+    0,
+    6,
+    18
 );
+
+
 
 
 
 const renderer =
 new THREE.WebGLRenderer({
-antialias:true
+    antialias:true
 });
 
 
 renderer.setSize(
-window.innerWidth,
-window.innerHeight
+    window.innerWidth,
+    window.innerHeight
 );
 
 
@@ -47,27 +48,32 @@ document
 
 
 
-// 灯光
 
-scene.add(
+// ---------- Light ----------
+
+
+const light =
 new THREE.AmbientLight(
-0xffffff,
-2
-)
+    0xffffff,
+    2
 );
 
 
+scene.add(light);
 
 
-// =====================
-// 电脑
-// 后续换computer.glb
-// =====================
+
+
+
+// =================================
+// Computer
+// 后续替换 computer.glb
+// =================================
+
 
 
 const computer =
 new THREE.Group();
-
 
 
 scene.add(computer);
@@ -76,149 +82,168 @@ scene.add(computer);
 
 // 屏幕
 
-const monitor =
+const screen =
 new THREE.Mesh(
 
-new THREE.BoxGeometry(
-4,
-2.5,
-0.3
-),
+    new THREE.BoxGeometry(
+        4,
+        2.4,
+        0.25
+    ),
 
+    new THREE.MeshBasicMaterial({
 
-new THREE.MeshBasicMaterial({
+        color:0x222222
 
-color:0x222222
-
-})
+    })
 
 );
 
 
-monitor.position.z=-2;
+
+screen.position.set(
+    0,
+    0,
+    -5
+);
 
 
-computer.add(monitor);
+
+computer.add(screen);
+
 
 
 
 // 底座
 
-const stand =
+const base =
 new THREE.Mesh(
 
-new THREE.BoxGeometry(
-1,
-1,
-1
-),
+    new THREE.BoxGeometry(
+        1,
+        1,
+        1
+    ),
 
+    new THREE.MeshBasicMaterial({
 
-new THREE.MeshBasicMaterial({
+        color:0xffffff
 
-color:0xffffff
-
-})
+    })
 
 );
 
 
-stand.position.y=-2;
 
-
-stand.position.z=-2;
-
-
-computer.add(stand);
-
+base.position.set(
+    0,
+    -2,
+    -5
+);
 
 
 
-// =====================
-// USB系统
-// =====================
+computer.add(base);
+
+
+
+
+
+// =================================
+// USB System
+// USB 位于电脑后方
+// =================================
 
 
 const usbGroup =
 new THREE.Group();
 
 
-
 scene.add(usbGroup);
 
+
+
+const usbNumber = 5;
 
 
 let usbList=[];
 
 
 
-const games=5;
+for(let i=0;i<usbNumber;i++){
 
 
 
-for(let i=0;i<games;i++){
+    const usb =
+    new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            0.7,
+            1.5,
+            0.25
+        ),
+
+        new THREE.MeshStandardMaterial({
+
+            color:0x888888
+
+        })
+
+    );
 
 
 
-let usb =
-new THREE.Mesh(
-
-new THREE.BoxGeometry(
-0.7,
-1.5,
-0.25
-),
+    // -----------------------------
+    // USB 后方随机空间
+    // -----------------------------
 
 
-new THREE.MeshStandardMaterial({
+    usb.position.set(
 
-color:0x888888
+        (Math.random()-0.5)*12,
 
-})
-
-);
+        Math.random()*5+2,
 
 
+        // 比电脑远
+        5 + Math.random()*8
 
 
-// USB在电脑后方
-
-usb.position.set(
-
-(Math.random()-0.5)*12,
-
-
-Math.random()*5+1,
-
-
-4+Math.random()*5
-
-
-);
+    );
 
 
 
-usb.rotation.y=
-Math.random()*3;
+    usb.rotation.y =
+    Math.random()*Math.PI;
 
 
 
-usb.userData={
-
-baseY:usb.position.y,
-
-speed:
-Math.random()*0.02+0.01
-
-};
+    usb.userData={
 
 
+        baseY:
+        usb.position.y,
 
-usbGroup.add(usb);
+
+        offset:
+        Math.random()*10,
+
+
+        floatSpeed:
+        Math.random()*0.5+0.5,
+
+
+        id:i
+
+
+    };
 
 
 
-usbList.push(usb);
+    usbGroup.add(usb);
+
+
+    usbList.push(usb);
 
 
 }
@@ -227,148 +252,162 @@ usbList.push(usb);
 
 
 
-// 当前游戏
-
-let current=0;
-
-
-
-
-let flying=false;
+// =================================
+// 游戏选择
+// =================================
 
 
 
+let currentGame=0;
 
 
-// =====================
-// USB飞入电脑
-// =====================
+let moving=false;
+
+
+
+
+// =================================
+// USB 飞入电脑
+// =================================
 
 
 
 function insertUSB(index){
 
 
-if(flying)
-return;
+    if(moving)
+    return;
 
 
 
-flying=true;
+    moving=true;
 
 
 
-let usb=
-usbList[index];
+    let usb =
+    usbList[index];
 
 
 
-let start=
-usb.position.clone();
+    let start =
+    usb.position.clone();
 
 
 
-let end=
-new THREE.Vector3(
-0,
--1,
--1
-);
+    // USB接口位置
+    let target =
+    new THREE.Vector3(
+
+        0,
+
+        -0.5,
+
+        -6
+
+    );
 
 
 
-let progress=0;
+    let t=0;
 
 
 
-
-function fly(){
-
-
-progress+=0.02;
+    function move(){
 
 
 
-usb.position.lerpVectors(
-start,
-end,
-progress
-);
+        t+=0.025;
 
 
 
-usb.rotation.x+=0.1;
+        usb.position.lerpVectors(
+
+            start,
+
+            target,
+
+            t
+
+        );
 
 
 
-if(progress<1){
+        usb.rotation.x +=0.1;
+
+        usb.rotation.z +=0.05;
 
 
-requestAnimationFrame(
-fly
-);
+
+        if(t<1){
+
+
+            requestAnimationFrame(move);
+
+
+        }
+
+        else{
+
+
+            changeScreen(index);
+
+
+            moving=false;
+
+
+        }
+
+
+
+    }
+
+
+
+    move();
+
 
 
 }
 
-else{
-
-
-flying=false;
-
-
-changeScreen(index);
-
-
-}
-
-
-
-}
-
-
-fly();
-
-
-
-}
 
 
 
 
-
-
-// =====================
+// =================================
 // 屏幕显示
-// =====================
+// =================================
 
 
-function changeScreen(i){
+function changeScreen(index){
+
 
 
 document
-.getElementById(
-"gameName"
-)
-.innerHTML=
-"GAME0"+(i+1);
+.getElementById("gameName")
+.innerHTML =
+"GAME0"+(index+1);
+
 
 
 
 let texture =
 new THREE.TextureLoader()
 .load(
-"assets/images/game0"+(i+1)+".png"
+
+"assets/images/game0"+(index+1)+".png"
+
 );
 
 
 
-monitor.material =
+
+screen.material =
 new THREE.MeshBasicMaterial({
 
-map:texture
+    map:texture
 
 });
+
 
 
 }
@@ -376,48 +415,56 @@ map:texture
 
 
 
-// =====================
-// 按钮
-// =====================
+
+
+
+// =================================
+// 左右按钮
+// =================================
+
 
 
 document
 .getElementById("right")
-.onclick=()=>{
+.onclick=function(){
 
 
-current++;
+    currentGame++;
 
 
-if(current>=games)
+    if(currentGame>=usbNumber)
 
-current=0;
+    currentGame=0;
 
 
 
-insertUSB(current);
-
+    insertUSB(currentGame);
 
 
 };
+
+
+
 
 
 
 document
 .getElementById("left")
-.onclick=()=>{
-
-
-current--;
-
-
-if(current<0)
-
-current=games-1;
+.onclick=function(){
 
 
 
-insertUSB(current);
+    currentGame--;
+
+
+
+    if(currentGame<0)
+
+    currentGame=usbNumber-1;
+
+
+
+    insertUSB(currentGame);
 
 
 };
@@ -425,9 +472,15 @@ insertUSB(current);
 
 
 
-// =====================
-// 漂浮动画
-// =====================
+
+
+
+
+
+// =================================
+// USB漂浮动画
+// =================================
+
 
 
 function animate(){
@@ -439,26 +492,41 @@ animate
 
 
 
+
+
 usbList.forEach(
 usb=>{
 
 
-usb.position.y +=
+    usb.position.y =
 
-Math.sin(Date.now()*0.002)
+    usb.userData.baseY +
 
-*
-usb.userData.speed;
+    Math.sin(
+
+        Date.now()*0.001*
+
+        usb.userData.floatSpeed
+
+        +
+
+        usb.userData.offset
+
+    )
+
+    *
+
+    0.3;
 
 
 
-usb.rotation.y+=0.005;
+    usb.rotation.y +=0.005;
+
 
 
 }
 
 );
-
 
 
 
@@ -473,58 +541,87 @@ camera
 }
 
 
+
 animate();
 
 
 
 
 
-// =====================
-// 滚动镜头
-// =====================
+
+
+
+
+// =================================
+// Scroll Camera
+// =================================
 
 
 window.addEventListener(
 "scroll",
+
 ()=>{
 
 
-let p=
-window.scrollY/
-(document.body.scrollHeight-window.innerHeight);
+let progress =
+
+window.scrollY /
+
+(
+document.body.scrollHeight
+-
+window.innerHeight
+);
 
 
 
-camera.position.y=
-8-10*p;
+camera.position.y =
+
+6 -
+
+progress*10;
 
 
 
-camera.position.z=
-15-8*p;
+camera.position.z =
+
+18 -
+
+progress*8;
 
 
 
 camera.lookAt(
 0,
 0,
-0
+-3
 );
 
 
 
-});
+}
+
+);
 
 
 
 
 
-window.onresize=()=>{
+
+// =================================
+// Resize
+// =================================
 
 
-camera.aspect=
-window.innerWidth/
+window.onresize=function(){
+
+
+camera.aspect =
+
+window.innerWidth /
+
 window.innerHeight;
+
 
 
 camera.updateProjectionMatrix();
@@ -532,9 +629,13 @@ camera.updateProjectionMatrix();
 
 
 renderer.setSize(
+
 window.innerWidth,
+
 window.innerHeight
+
 );
 
 
-}
+
+};
