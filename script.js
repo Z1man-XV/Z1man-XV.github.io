@@ -1,39 +1,41 @@
 // =================================
 // Zeman Portfolio
-// Floating USB Space Test
+// USB Game Cartridge System
 // =================================
 
 
-// =======================
+
+// ==============================
 // Scene
-// =======================
+// ==============================
 
 
 const scene = new THREE.Scene();
 
 
 
-const camera = new THREE.PerspectiveCamera(
+const camera =
+new THREE.PerspectiveCamera(
 45,
-window.innerWidth / window.innerHeight,
+window.innerWidth/window.innerHeight,
 0.1,
 1000
 );
 
 
-// 摄像机
 
 camera.position.set(
 0,
-3,
+4,
 20
 );
 
 
 
+
 const renderer =
 new THREE.WebGLRenderer({
-antialias:true
+    antialias:true
 });
 
 
@@ -43,6 +45,7 @@ window.innerHeight
 );
 
 
+
 document
 .getElementById("scene")
 .appendChild(renderer.domElement);
@@ -50,9 +53,11 @@ document
 
 
 
-// =======================
+
+
+// ==============================
 // Light
-// =======================
+// ==============================
 
 
 scene.add(
@@ -66,10 +71,11 @@ new THREE.AmbientLight(
 
 
 
-// =======================
+
+
+// ==============================
 // Computer
-// 前方
-// =======================
+// ==============================
 
 
 const computer =
@@ -77,6 +83,7 @@ new THREE.Group();
 
 
 scene.add(computer);
+
 
 
 
@@ -89,12 +96,13 @@ new THREE.Mesh(
 new THREE.BoxGeometry(
 5,
 3,
-0.5
+0.3
 ),
+
 
 new THREE.MeshBasicMaterial({
 
-color:0x00ff00
+color:0x111111
 
 })
 
@@ -103,18 +111,17 @@ color:0x00ff00
 
 
 screen.position.set(
-
 0,
-
 0,
-
 5
-
 );
 
 
 
 computer.add(screen);
+
+
+
 
 
 
@@ -130,6 +137,7 @@ new THREE.BoxGeometry(
 1
 ),
 
+
 new THREE.MeshBasicMaterial({
 
 color:0xffffff
@@ -141,14 +149,11 @@ color:0xffffff
 
 
 base.position.set(
-
 0,
-
 -2,
-
 5
-
 );
+
 
 
 computer.add(base);
@@ -159,11 +164,9 @@ computer.add(base);
 
 
 
-
-// =======================
-// USB
-// 后方
-// =======================
+// ==============================
+// USB系统
+// ==============================
 
 
 const usbGroup =
@@ -174,15 +177,39 @@ scene.add(usbGroup);
 
 
 
+
+const gameCount = 6;
+
+
+
 let usbList=[];
 
 
 
-const usbCount=6;
+
+const gameColors=[
+
+0x00ffff,
+0xff0033,
+0x00ff66,
+0xffcc00,
+0xff00ff,
+0xffffff
+
+];
 
 
 
-for(let i=0;i<usbCount;i++){
+
+
+
+// ==============================
+// 创建USB
+// ==============================
+
+
+
+for(let i=0;i<gameCount;i++){
 
 
 
@@ -198,7 +225,7 @@ new THREE.BoxGeometry(
 
 new THREE.MeshStandardMaterial({
 
-color:0xff0000
+color:gameColors[i]
 
 })
 
@@ -208,22 +235,19 @@ color:0xff0000
 
 
 
-// ===================
-// 随机空间
-// Z 小于电脑
-// ===================
+// 后方随机位置
 
 
 usb.position.set(
 
 
-(Math.random()-0.5)*10,
+(Math.random()-0.5)*12,
 
 
 (Math.random()-0.5)*8,
 
 
--8-Math.random()*8
+-8-Math.random()*10
 
 
 );
@@ -232,13 +256,12 @@ usb.position.set(
 
 
 
+
 usb.rotation.set(
 
-Math.random()*3,
-
-Math.random()*3,
-
-Math.random()*3
+Math.random(),
+Math.random(),
+Math.random()
 
 );
 
@@ -250,8 +273,16 @@ Math.random()*3
 usb.userData={
 
 
-baseY:
-usb.position.y,
+id:i,
+
+
+state:"FLOAT",
+
+
+
+home:
+usb.position.clone(),
+
 
 
 offset:
@@ -262,7 +293,10 @@ speed:
 0.001+Math.random()*0.001
 
 
+
 };
+
+
 
 
 
@@ -284,12 +318,392 @@ usbList.push(usb);
 
 
 
-// =======================
-// 动画
-// =======================
+// ==============================
+// 当前游戏
+// ==============================
+
+
+let currentGame=0;
+
+
+let busy=false;
+
+
+
+let currentUSB=null;
+
+
+
+
+
+
+// ==============================
+// 飞行动画
+// ==============================
+
+
+
+function moveUSB(usb,target,callback){
+
+
+let start =
+usb.position.clone();
+
+
+let progress=0;
+
+
+
+
+function animateMove(){
+
+
+
+progress+=0.025;
+
+
+
+usb.position.lerpVectors(
+
+start,
+
+target,
+
+progress
+
+);
+
+
+
+usb.rotation.x+=0.1;
+
+usb.rotation.y+=0.1;
+
+
+
+if(progress<1){
+
+
+requestAnimationFrame(
+animateMove
+);
+
+
+
+}else{
+
+
+callback();
+
+
+}
+
+
+
+}
+
+
+
+animateMove();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// 加载游戏
+// ==============================
+
+
+
+function loadGame(index){
+
+
+
+let usb =
+usbList[index];
+
+
+
+usb.visible=true;
+
+
+
+usb.userData.state=
+"FLY_IN";
+
+
+
+
+
+// 飞向电脑接口
+
+
+moveUSB(
+
+usb,
+
+
+new THREE.Vector3(
+
+0,
+
+-0.3,
+
+4
+
+
+),
+
+
+
+()=>{
+
+
+
+// 屏幕改变
+
+
+screen.material.color.setHex(
+gameColors[index]
+);
+
+
+
+
+
+document
+.getElementById("gameName")
+.innerHTML=
+"GAME0"+(index+1);
+
+
+
+
+
+// 插入后隐藏
+
+
+usb.visible=false;
+
+
+usb.userData.state=
+"LOADED";
+
+
+
+busy=false;
+
+
+}
+
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// 卸载旧游戏
+// ==============================
+
+
+function unloadGame(usb,next){
+
+
+
+if(!usb)
+{
+
+loadGame(next);
+
+return;
+
+}
+
+
+
+usb.visible=true;
+
+
+
+usb.userData.state=
+"FLY_OUT";
+
+
+
+
+
+moveUSB(
+
+
+usb,
+
+
+usb.userData.home,
+
+
+
+()=>{
+
+
+usb.userData.state=
+"FLOAT";
+
+
+
+// 下一张卡进入
+
+
+loadGame(next);
+
+
+
+}
+
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ==============================
+// 切换按钮
+// ==============================
+
+
+
+function changeGame(direction){
+
+
+
+if(busy)
+
+return;
+
+
+
+busy=true;
+
+
+
+let next =
+currentGame+direction;
+
+
+
+
+if(next<0)
+
+next=gameCount-1;
+
+
+
+if(next>=gameCount)
+
+next=0;
+
+
+
+
+
+let oldUSB =
+currentUSB;
+
+
+
+
+
+currentGame=next;
+
+
+
+currentUSB=
+usbList[next];
+
+
+
+
+
+unloadGame(
+
+oldUSB,
+
+next
+
+);
+
+
+
+}
+
+
+
+
+
+
+document
+.getElementById("right")
+.onclick=()=>{
+
+changeGame(1);
+
+};
+
+
+
+
+
+document
+.getElementById("left")
+.onclick=()=>{
+
+changeGame(-1);
+
+};
+
+
+
+
+
+
+
+
+// ==============================
+// USB漂浮
+// ==============================
 
 
 function animate(){
+
 
 
 requestAnimationFrame(
@@ -299,16 +713,21 @@ animate
 
 
 
-
 usbList.forEach(
 usb=>{
 
 
-// 慢速上下漂浮
+
+if(
+usb.userData.state==="FLOAT"
+){
+
+
 
 usb.position.y =
 
-usb.userData.baseY +
+
+usb.userData.home.y+
 
 Math.sin(
 
@@ -316,27 +735,26 @@ Date.now()*
 usb.userData.speed
 
 +
-
 usb.userData.offset
 
 )
-
 *
 0.25;
 
 
 
 
-
-// 慢速旋转
-
-usb.rotation.y +=0.001;
+usb.rotation.y+=0.001;
 
 
 
 }
 
-);
+
+
+});
+
+
 
 
 
@@ -360,45 +778,69 @@ animate();
 
 
 
-// =======================
-// Scroll Camera
-// =======================
+
+
+
+// ==============================
+// 默认加载GAME01
+// ==============================
+
+
+setTimeout(()=>{
+
+
+loadGame(0);
+
+
+currentUSB=
+usbList[0];
+
+
+},1000);
+
+
+
+
+
+
+
+
+
+// ==============================
+// 滚动镜头
+// ==============================
 
 
 window.addEventListener(
 "scroll",
+
 ()=>{
 
 
-let p =
-window.scrollY /
+let p=
+window.scrollY/
 
 (
-document.body.scrollHeight
--
+document.body.scrollHeight-
 window.innerHeight
 );
 
 
 
-camera.position.y =
-3-p*8;
+camera.position.y=
+4-p*8;
 
 
 
-camera.position.z =
-20-p*5;
+camera.position.z=
+20-p*6;
 
 
 
 camera.lookAt(
-
 0,
-
 0,
-
-0
-
+3
 );
 
 
@@ -412,20 +854,25 @@ camera.lookAt(
 
 
 
-// =======================
+
+
+
+// ==============================
 // Resize
-// =======================
+// ==============================
 
 
-window.onresize=function(){
+window.onresize=()=>{
 
 
-camera.aspect =
-window.innerWidth /
+camera.aspect=
+window.innerWidth/
 window.innerHeight;
 
 
+
 camera.updateProjectionMatrix();
+
 
 
 renderer.setSize(
