@@ -152,23 +152,24 @@ button {
 }
 
 .stage-sticky {
-  position: sticky;
-  top:0;
+  position: relative;
   height:100vh;
-  height: 100dvh;
-  min-height: 42rem;
-  overflow: hidden;
-  isolation: isolate;
+  height:100dvh;
+  min-height:42rem;
+  overflow:hidden;
+  isolation:isolate;
+
   background:
     radial-gradient(circle at 54% 36%, rgba(0, 151, 255, 0.14), transparent 28%),
     radial-gradient(circle at 50% 82%, rgba(0, 63, 128, 0.12), transparent 42%),
     linear-gradient(
-  180deg,
-  #01050d 0%,
-  #01050d 35%,
-  #020812 65%,
-  #00030a 100%
-);
+      180deg,
+      #01050d 0%,
+      #01050d 35%,
+      #020812 65%,
+      #00030a 100%
+    );
+}
 }
 
 .stage-sticky::after {
@@ -293,16 +294,13 @@ h1 em {
 
   z-index: auto;
 
-  left:0;
-  right:0;
+  inset: 4.3rem 0 3rem;
 
-  height:70vh;
+  overflow: hidden;
 
-  overflow:hidden;
+  opacity: 1;
 
-  opacity:1;
-
-  transform:none;
+  transform: none;
 }
 
 #scene-canvas {
@@ -623,10 +621,11 @@ h1 em {
     display: none;
   }
 
-  .scroll-stage {
-    height: 310vh;
-    min-height: 138rem;
-  }
+ .scroll-stage {
+  position: relative;
+  height:200vh;
+  min-height:120rem;
+}
 
   .stage-sticky {
     min-height: 36rem;
