@@ -722,8 +722,8 @@ function updateScroll() {
   const max = Math.max(1, scrollStage.offsetHeight - window.innerHeight);
   const rect = scrollStage.getBoundingClientRect();
   scrollRatio = THREE.MathUtils.clamp(-rect.top / max, 0, 1);
-  targetLidClose = THREE.MathUtils.smoothstep(scrollRatio, 0.05, 0.6);
-  targetRetreat = THREE.MathUtils.smoothstep(scrollRatio, 0.14, 0.82);
+  targetLidClose = THREE.MathUtils.smoothstep(scrollRatio, 0.12, 0.95);
+  targetRetreat = THREE.MathUtils.smoothstep(scrollRatio, 0.28, 1);
   const maxPitch = window.innerWidth < 720 ? 3 : 4;
   const minPitch = window.innerWidth < 720 ? -5 : -7;
   targetPitch = THREE.MathUtils.degToRad(THREE.MathUtils.lerp(maxPitch, minPitch, scrollRatio));
@@ -812,7 +812,7 @@ function animate(now) {
   currentPitch = THREE.MathUtils.lerp(currentPitch, targetPitch, pitchEase);
   currentLidClose = THREE.MathUtils.lerp(currentLidClose, targetLidClose, pitchEase);
   currentRetreat = THREE.MathUtils.lerp(currentRetreat, targetRetreat, pitchEase);
-  lidGroup.rotation.x = THREE.MathUtils.lerp(0, THREE.MathUtils.degToRad(86), currentLidClose);
+  lidGroup.rotation.x = THREE.MathUtils.lerp(0, THREE.MathUtils.degToRad(89), currentLidClose);
   terminal.rotation.x = currentPitch;
   terminal.rotation.y = (reducedMotion.matches ? 0 : pointerX * 0.012) - currentRetreat * 0.12;
   terminal.rotation.z = currentRetreat * 0.025;
