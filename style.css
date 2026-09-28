@@ -259,18 +259,22 @@ button {
 .intro-copy {
   position: absolute;
   z-index: 4;
-  left: clamp(1.25rem, 3.2vw, 3.5rem);
-  top: clamp(3.85rem, 6vh, 4.8rem);
-  width: min(40rem, 48vw);
+  left: 50%;
+  top: 48%;
+  width: min(84vw, 76rem);
   pointer-events: none;
-  transform-origin: left top;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
   will-change: opacity, transform, filter;
 }
 
 .kicker {
   display: flex;
-  justify-content: space-between;
-  margin: 0 0 0.6rem;
+  width: min(34rem, 72vw);
+  justify-content: center;
+  gap: 1.4rem;
+  margin: 0 auto 1.1rem;
   padding-bottom: 0.45rem;
   border-bottom: 1px solid var(--line);
   color: rgba(225, 250, 255, 0.72);
@@ -282,9 +286,9 @@ h1 {
   margin: 0;
   color: #e5faff;
   text-shadow: 0 0 2rem rgba(0, 174, 255, 0.16);
-  font-size: clamp(3.6rem, 7.5vw, 8.7rem);
+  font-size: clamp(5rem, 10.5vw, 11.5rem);
   font-weight: 850;
-  line-height: 0.9;
+  line-height: 0.78;
   letter-spacing: -0.075em;
 }
 
@@ -297,7 +301,7 @@ h1 em {
 
 .intro-note {
   max-width: 19rem;
-  margin: 1.55rem 0 0;
+  margin: 1.8rem auto 0;
   color: rgba(225, 250, 255, 0.72);
   font-size: 0.9rem;
   line-height: 1.7;
@@ -1074,24 +1078,24 @@ h1 em {
   }
 
   .intro-copy {
-    left: 1rem;
-    top: 4.05rem;
+    left: 50%;
+    top: 43%;
     width: calc(100% - 2rem);
   }
 
   .kicker {
     width: min(100%, 22rem);
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.75rem;
   }
 
   h1 {
-    font-size: clamp(3rem, 14.5vw, 5.2rem);
-    line-height: 0.98;
+    font-size: clamp(4.25rem, 19vw, 6.2rem);
+    line-height: 0.82;
   }
 
   .intro-note {
-    max-width: 14rem;
-    margin-top: 0.8rem;
+    max-width: 17rem;
+    margin-top: 1.1rem;
     font-size: 0.78rem;
     line-height: 1.5;
   }

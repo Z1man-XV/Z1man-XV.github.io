@@ -54,6 +54,8 @@ let pointerX = 0;
 let pointerY = 0;
 let targetPitch = THREE.MathUtils.degToRad(4);
 let currentPitch = targetPitch;
+let targetFocus = 0;
+let currentFocus = 0;
 let targetLidClose = 0;
 let currentLidClose = 0;
 let targetRetreat = 0;
@@ -580,12 +582,16 @@ function selectProject(index) {
       index,
       start: performance.now(),
       duration: reducedMotion.matches ? 1 : 1150,
+      tracksPort: true,
       fromPosition: drive.position.clone(),
       fromRotation: drive.rotation.clone(),
       toPosition: targetPosition,
       toRotation: new THREE.Euler().setFromQuaternion(targetQuaternion, "XYZ"),
       onComplete: () => {
         terminal.attach(drive);
+        drive.position.copy(portAnchor.position);
+        drive.quaternion.copy(portAnchor.quaternion);
+        drive.updateMatrixWorld(true);
         drive.userData.inserted = true;
         setScreenProject(projects[index]);
         updateExternalAudio(projects[index]);
@@ -651,6 +657,13 @@ function easeInOutCubic(value) {
 function updateInsertion(now) {
   if (!insertion) return;
   const drive = usbDrives[insertion.index];
+  if (insertion.tracksPort) {
+    terminal.updateMatrixWorld(true);
+    const targetQuaternion = new THREE.Quaternion();
+    portAnchor.getWorldPosition(insertion.toPosition);
+    portAnchor.getWorldQuaternion(targetQuaternion);
+    insertion.toRotation.setFromQuaternion(targetQuaternion, "XYZ");
+  }
   const raw = Math.min(1, (now - insertion.start) / insertion.duration);
   const eased = easeInOutCubic(raw);
   drive.position.lerpVectors(insertion.fromPosition, insertion.toPosition, eased);
@@ -676,7 +689,7 @@ function projectToScreen(object) {
 }
 
 function updateMarkers() {
-  const markerReveal = THREE.MathUtils.smoothstep(scrollRatio, 0.055, 0.2);
+  const markerReveal = THREE.MathUtils.smoothstep(scrollRatio, 0.3, 0.45);
   usbDrives.forEach((drive, index) => {
     const point = projectToScreen(drive);
     const marker = markers[index];
@@ -722,15 +735,16 @@ function updateScroll() {
   const max = Math.max(1, scrollStage.offsetHeight - window.innerHeight);
   const rect = scrollStage.getBoundingClientRect();
   scrollRatio = THREE.MathUtils.clamp(-rect.top / max, 0, 1);
-  targetLidClose = THREE.MathUtils.smoothstep(scrollRatio, 0.12, 0.95);
-  targetRetreat = THREE.MathUtils.smoothstep(scrollRatio, 0.28, 1);
+  targetFocus = THREE.MathUtils.smoothstep(scrollRatio, 0.04, 0.36);
+  targetLidClose = THREE.MathUtils.smoothstep(scrollRatio, 0.48, 0.96);
+  targetRetreat = THREE.MathUtils.smoothstep(scrollRatio, 0.64, 1);
   const maxPitch = window.innerWidth < 720 ? 3 : 4;
   const minPitch = window.innerWidth < 720 ? -5 : -7;
   targetPitch = THREE.MathUtils.degToRad(THREE.MathUtils.lerp(maxPitch, minPitch, scrollRatio));
-  const titleExit = THREE.MathUtils.smoothstep(scrollRatio, 0.025, 0.3);
+  const titleExit = THREE.MathUtils.smoothstep(scrollRatio, 0.05, 0.34);
   introCopy.style.opacity = String(1 - titleExit);
-  introCopy.style.transform = `translate3d(0, ${(-4.5 * titleExit).toFixed(3)}rem, 0) scale(${(1 - titleExit * 0.08).toFixed(3)})`;
-  introCopy.style.filter = `blur(${(titleExit * 5).toFixed(2)}px)`;
+  introCopy.style.transform = `translate(-50%, -50%) translateY(${(-7 * titleExit).toFixed(3)}rem) scale(${(1 - titleExit * 0.12).toFixed(3)})`;
+  introCopy.style.filter = `blur(${(titleExit * 7).toFixed(2)}px)`;
   const degrees = THREE.MathUtils.radToDeg(targetPitch);
   pitchReadout.textContent = `${degrees >= 0 ? "+" : ""}${degrees.toFixed(1)}°`;
   scrollProgress.style.transform = `scaleX(${scrollRatio})`;
@@ -810,6 +824,7 @@ function animate(now) {
 
   const pitchEase = reducedMotion.matches ? 1 : 1 - Math.exp(-delta * 5.5);
   currentPitch = THREE.MathUtils.lerp(currentPitch, targetPitch, pitchEase);
+  currentFocus = THREE.MathUtils.lerp(currentFocus, targetFocus, pitchEase);
   currentLidClose = THREE.MathUtils.lerp(currentLidClose, targetLidClose, pitchEase);
   currentRetreat = THREE.MathUtils.lerp(currentRetreat, targetRetreat, pitchEase);
   lidGroup.rotation.x = THREE.MathUtils.lerp(0, THREE.MathUtils.degToRad(89), currentLidClose);
@@ -817,11 +832,16 @@ function animate(now) {
   terminal.rotation.y = (reducedMotion.matches ? 0 : pointerX * 0.012) - currentRetreat * 0.12;
   terminal.rotation.z = currentRetreat * 0.025;
   const mobileLayout = window.innerWidth < 720;
-  terminal.position.x = THREE.MathUtils.lerp(mobileLayout ? 0 : 0.9, mobileLayout ? 0 : 2.15, currentRetreat);
-  terminal.position.y = terminalRestY + THREE.MathUtils.lerp(0, mobileLayout ? 1.1 : 1.35, currentRetreat)
-    + Math.sin(elapsed * 0.65) * (reducedMotion.matches ? 0 : 0.025) * (1 - currentRetreat);
-  terminal.position.z = THREE.MathUtils.lerp(0.2, -3.8, currentRetreat);
-  terminal.scale.setScalar(THREE.MathUtils.lerp(1, mobileLayout ? 0.54 : 0.5, currentRetreat));
+  const focusX = mobileLayout ? 0 : 0.45;
+  const focusedX = focusX;
+  const focusedY = THREE.MathUtils.lerp(mobileLayout ? -3.25 : -3.6, terminalRestY, currentFocus);
+  const focusedZ = THREE.MathUtils.lerp(-1.35, 0.2, currentFocus);
+  const focusedScale = THREE.MathUtils.lerp(mobileLayout ? 0.68 : 0.72, mobileLayout ? 1 : 1.06, currentFocus);
+  terminal.position.x = THREE.MathUtils.lerp(focusedX, mobileLayout ? 0 : 1.8, currentRetreat);
+  terminal.position.y = THREE.MathUtils.lerp(focusedY, mobileLayout ? 1.05 : 1.3, currentRetreat)
+    + Math.sin(elapsed * 0.65) * (reducedMotion.matches ? 0 : 0.025) * currentFocus * (1 - currentRetreat);
+  terminal.position.z = THREE.MathUtils.lerp(focusedZ, -3.8, currentRetreat);
+  terminal.scale.setScalar(THREE.MathUtils.lerp(focusedScale, mobileLayout ? 0.54 : 0.5, currentRetreat));
 
   if (dataField && !reducedMotion.matches) {
     dataField.rotation.y = elapsed * 0.018;
@@ -835,7 +855,7 @@ function animate(now) {
     drive.position.x = drive.userData.home.x + Math.cos(elapsed * 0.48 + phase) * 0.07 * amount;
     drive.rotation.z = drive.userData.homeRotation.z + Math.sin(elapsed * 0.56 + phase) * 0.09 * amount;
     drive.rotation.y = drive.userData.homeRotation.y + Math.cos(elapsed * 0.38 + phase) * 0.08 * amount;
-    const deviceReveal = THREE.MathUtils.lerp(0.35, 1, THREE.MathUtils.smoothstep(scrollRatio, 0.025, 0.2));
+    const deviceReveal = THREE.MathUtils.smoothstep(scrollRatio, 0.24, 0.43);
     const scale = (hoveredDrive === index ? 1.1 : 1) * deviceReveal;
     drive.scale.lerp(new THREE.Vector3(scale, scale, scale), 1 - Math.exp(-delta * 10));
   });
