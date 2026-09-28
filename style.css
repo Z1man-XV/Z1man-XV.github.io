@@ -623,8 +623,8 @@ h1 em {
 
 .scroll-stage {
   position: relative;
-  height: 350vh;
-  min-height: 220rem;
+  height: 400vh;
+  min-height: 300rem;
 }
 
   .stage-sticky {
