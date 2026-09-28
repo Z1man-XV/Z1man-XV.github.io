@@ -147,8 +147,8 @@ button {
 
 .scroll-stage {
   position: relative;
-  height: 300vh;
-  min-height: 180rem;
+  height: 450vh;
+  min-height: 260rem;
 }
 
 .stage-sticky {
@@ -219,7 +219,7 @@ button {
   position: absolute;
   z-index: 10;
 
-  top: 12vh;
+  top:6vh;
   left: 50%;
 
   width: 80%;
@@ -295,8 +295,6 @@ h1 em {
 
   left:0;
   right:0;
-
-   top:35vh;
 
   height:70vh;
 
