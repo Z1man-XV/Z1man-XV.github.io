@@ -212,7 +212,7 @@ button {
   position: absolute;
   z-index: 4;
   left: clamp(1.25rem, 4vw, 4rem);
-  top: clamp(7.25rem, 15vh, 10rem);
+  top: 5rem;
   width: min(29rem, 37vw);
   pointer-events: none;
 }
@@ -274,10 +274,13 @@ h1 em {
 }
 
 .scene-shell {
-  position: relative;
+  position: absolute;
   z-index: auto;
-  height: 100vh;
-  overflow: hidden;
+  left:0;
+  right:0;
+  top:20rem;
+  height:70vh;
+  overflow:hidden;
 }
 
 #scene-canvas {
