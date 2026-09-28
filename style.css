@@ -621,10 +621,10 @@ h1 em {
     display: none;
   }
 
- .scroll-stage {
+.scroll-stage {
   position: relative;
-  height:200vh;
-  min-height:120rem;
+  height: 350vh;
+  min-height: 220rem;
 }
 
   .stage-sticky {
