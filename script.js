@@ -419,13 +419,22 @@ function setupScene() {
   terminal = buildTerminal();
   scene.add(terminal);
 
-  const desktopPositions = [
-    [-3.65, 1.85, -0.55],
-    [4.1, 2.05, -0.7],
-    [-3.95, -0.05, -0.1],
-    [4.3, -0.05, -0.25],
-    [-2.15, 3.72, -0.85],
-  ];
+  const compactLayout = shell.clientWidth < 1120;
+  const desktopPositions = compactLayout
+    ? [
+        [-4.15, 1.85, -0.55],
+        [4.05, 3.25, -0.7],
+        [-4.35, -0.08, -0.1],
+        [5.0, -0.12, -0.25],
+        [-2.45, 3.3, -0.85],
+      ]
+    : [
+        [-3.85, 1.95, -0.55],
+        [4.35, 2.28, -0.7],
+        [-4.15, -0.05, -0.1],
+        [4.55, -0.05, -0.25],
+        [-2.65, 3.28, -0.85],
+      ];
 
   usbDrives = projects.map((project, index) => {
     const drive = buildUsb(index);
