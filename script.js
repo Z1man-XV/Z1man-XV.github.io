@@ -8,11 +8,11 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
  * href 填点击电脑屏幕后要去的页面
  */
 const projects = [
-  { id: "01", title: "动态视觉", type: "MOTION STUDY", year: "2026", accent: "#baff39", video: "", audio: "", href: "" },
-  { id: "02", title: "品牌实验", type: "IDENTITY SYSTEM", year: "2026", accent: "#ff7657", video: "", audio: "", href: "" },
-  { id: "03", title: "交互叙事", type: "INTERACTIVE FILM", year: "2025", accent: "#78d8ff", video: "", audio: "", href: "" },
-  { id: "04", title: "空间影像", type: "SPATIAL MEDIA", year: "2025", accent: "#ffd65a", video: "", audio: "", href: "" },
-  { id: "05", title: "游戏原型", type: "PLAYABLE PROTOTYPE", year: "SOON", accent: "#d5a3ff", video: "", audio: "", href: "" },
+  { id: "01", title: "动态视觉", type: "MOTION STUDY", year: "2026", accent: "#00d9ff", video: "", audio: "", href: "" },
+  { id: "02", title: "品牌实验", type: "IDENTITY SYSTEM", year: "2026", accent: "#2aa8ff", video: "", audio: "", href: "" },
+  { id: "03", title: "交互叙事", type: "INTERACTIVE FILM", year: "2025", accent: "#70e6ff", video: "", audio: "", href: "" },
+  { id: "04", title: "空间影像", type: "SPATIAL MEDIA", year: "2025", accent: "#0077ff", video: "", audio: "", href: "" },
+  { id: "05", title: "游戏原型", type: "PLAYABLE PROTOTYPE", year: "SOON", accent: "#a5f2ff", video: "", audio: "", href: "" },
 ];
 
 const shell = document.querySelector("#scene-shell");
@@ -38,6 +38,8 @@ let terminalRestY = -0.2;
 let usbDrives = [];
 let screenMesh;
 let portAnchor;
+let neuralCore;
+let dataField;
 let screenTexture;
 let videoElement;
 let videoTexture;
@@ -86,8 +88,8 @@ function canvasTexture(width, height, draw) {
 
 function drawScreen(project = null) {
   return canvasTexture(1024, 700, (ctx, width, height) => {
-    const accent = project?.accent || "#baff39";
-    ctx.fillStyle = "#07100b";
+    const accent = project?.accent || "#00d9ff";
+    ctx.fillStyle = "#020b16";
     ctx.fillRect(0, 0, width, height);
 
     const glow = ctx.createRadialGradient(width * 0.5, height * 0.44, 0, width * 0.5, height * 0.44, width * 0.62);
@@ -109,28 +111,28 @@ function drawScreen(project = null) {
     ctx.strokeRect(34, 34, width - 68, height - 68);
     ctx.fillStyle = accent;
     ctx.font = "700 24px monospace";
-    ctx.fillText("ARCHIVE TERMINAL / PORT 05", 58, 78);
+    ctx.fillText("NEURAL ARCHIVE / NODE 05", 58, 78);
     ctx.textAlign = "right";
     ctx.fillText(project ? `DEVICE ${project.id}` : "STANDBY", width - 58, 78);
     ctx.textAlign = "left";
 
     if (!project) {
       ctx.font = "700 72px Arial, sans-serif";
-      ctx.fillStyle = "#e6eadc";
-      ctx.fillText("INSERT", 58, 270);
+      ctx.fillStyle = "#e5faff";
+      ctx.fillText("CONNECT", 58, 270);
       ctx.strokeStyle = accent;
       ctx.lineWidth = 3;
       ctx.strokeRect(58, 304, width - 116, 72);
       ctx.fillStyle = accent;
       ctx.fillRect(58, 304, 170, 72);
-      ctx.fillStyle = "#07100b";
+      ctx.fillStyle = "#020b16";
       ctx.font = "700 26px monospace";
-      ctx.fillText("A DRIVE", 82, 350);
-      ctx.fillStyle = "#829083";
+      ctx.fillText("MEMORY", 82, 350);
+      ctx.fillStyle = "#6f94a6";
       ctx.font = "20px monospace";
-      ctx.fillText("SELECT ONE OF FIVE ARCHIVE DEVICES", 58, 443);
+      ctx.fillText("SELECT ONE OF FIVE MEMORY SHARDS", 58, 443);
     } else {
-      ctx.fillStyle = "#e9edde";
+      ctx.fillStyle = "#e5faff";
       ctx.font = "800 88px Arial, sans-serif";
       ctx.fillText(project.title, 58, 268);
       ctx.fillStyle = accent;
@@ -148,19 +150,19 @@ function drawScreen(project = null) {
       ctx.lineTo(154, 447.5);
       ctx.closePath();
       ctx.fill();
-      ctx.fillStyle = "#d7dcce";
+      ctx.fillStyle = "#c9f5ff";
       ctx.font = "22px monospace";
       ctx.fillText(project.video ? "LOADING MEDIA..." : "MEDIA PLACEHOLDER / READY", 190, 455);
-      ctx.fillStyle = "#7d8a7e";
+      ctx.fillStyle = "#668da0";
       ctx.font = "18px monospace";
       ctx.fillText("CLICK SCREEN FOR PROJECT PAGE", 58, 568);
     }
 
-    ctx.fillStyle = "#526054";
+    ctx.fillStyle = "#466f84";
     ctx.font = "18px monospace";
-    ctx.fillText("MEM 64K", 58, height - 58);
+    ctx.fillText("SYNAPSE 64K", 58, height - 58);
     ctx.textAlign = "right";
-    ctx.fillText("SIGNAL OK", width - 58, height - 58);
+    ctx.fillText("LINK STABLE", width - 58, height - 58);
   });
 }
 
@@ -182,102 +184,99 @@ function drawBadge(text) {
 
 function buildTerminal() {
   const group = new THREE.Group();
-  group.name = "retro-terminal";
+  group.name = "neural-laptop";
 
-  const beige = createMaterial(0xb7b09a, 0.88, 0.02);
-  const beigeDark = createMaterial(0x8d8877, 0.9, 0.02);
-  const bezel = createMaterial(0x20231f, 0.78, 0.03);
-  const black = createMaterial(0x111410, 0.8, 0.03);
-  const metal = createMaterial(0x747a76, 0.35, 0.78);
+  const shellMaterial = createMaterial(0x0c1824, 0.42, 0.72);
+  const edgeMaterial = createMaterial(0x193447, 0.35, 0.72);
+  const black = createMaterial(0x02070d, 0.74, 0.18);
+  const keyMaterial = createMaterial(0x07121c, 0.65, 0.26);
+  const metal = createMaterial(0x6e96a8, 0.22, 0.9);
+  const cyan = new THREE.MeshBasicMaterial({ color: 0x00d9ff, toneMapped: false });
 
-  const monitor = rounded(4.7, 3.55, 1.65, 0.28, beige, 6);
-  monitor.position.set(0, 1.05, 0);
-  group.add(monitor);
+  const lid = rounded(5.8, 3.55, 0.2, 0.16, shellMaterial, 6);
+  lid.position.set(0, 0.93, -1.02);
+  group.add(lid);
 
-  const frontInset = rounded(3.92, 2.62, 0.13, 0.18, bezel, 5);
-  frontInset.position.set(0, 1.25, 0.84);
-  group.add(frontInset);
+  const screenBezel = rounded(5.25, 3.03, 0.055, 0.1, black, 5);
+  screenBezel.position.set(0, 0.93, -0.9);
+  group.add(screenBezel);
 
   screenTexture = drawScreen();
   const screenMaterial = new THREE.MeshBasicMaterial({ map: screenTexture, toneMapped: false });
-  screenMesh = rounded(3.48, 2.18, 0.055, 0.16, screenMaterial, 5);
-  screenMesh.position.set(0, 1.28, 0.925);
+  screenMesh = rounded(4.86, 2.68, 0.025, 0.08, screenMaterial, 5);
+  screenMesh.position.set(0, 0.93, -0.865);
   screenMesh.name = "screen";
   group.add(screenMesh);
 
-  const controlPanel = rounded(4.1, 0.5, 0.1, 0.08, beigeDark, 4);
-  controlPanel.position.set(0, -0.46, 0.855);
-  group.add(controlPanel);
+  const cameraDot = new THREE.Mesh(new THREE.SphereGeometry(0.035, 12, 8), cyan);
+  cameraDot.position.set(0, 2.56, -0.89);
+  group.add(cameraDot);
 
-  for (let i = 0; i < 14; i += 1) {
-    const hole = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.03, 12), black);
-    hole.rotation.x = Math.PI / 2;
-    hole.position.set(-1.55 + i * 0.19, -0.45, 0.92);
-    group.add(hole);
+  const hingeGeometry = new THREE.CylinderGeometry(0.12, 0.12, 2.15, 24);
+  for (const x of [-1.65, 1.65]) {
+    const hinge = new THREE.Mesh(hingeGeometry, edgeMaterial);
+    hinge.rotation.z = Math.PI / 2;
+    hinge.position.set(x, -0.9, -0.95);
+    group.add(hinge);
   }
 
-  const ledMaterial = new THREE.MeshBasicMaterial({ color: 0xbaff39, toneMapped: false });
-  const led = new THREE.Mesh(new THREE.SphereGeometry(0.052, 16, 8), ledMaterial);
-  led.position.set(1.72, -0.45, 0.93);
-  group.add(led);
+  const deck = rounded(5.95, 0.3, 3.45, 0.16, shellMaterial, 6);
+  deck.position.set(0, -1.18, 0.57);
+  group.add(deck);
 
-  const power = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, 0.07, 24), black);
-  power.rotation.x = Math.PI / 2;
-  power.position.set(1.42, -0.45, 0.94);
-  group.add(power);
+  const deckGlow = rounded(5.55, 0.035, 2.98, 0.12, edgeMaterial, 4);
+  deckGlow.position.set(0, -1.005, 0.55);
+  group.add(deckGlow);
 
-  const badgeMaterial = new THREE.MeshBasicMaterial({ map: drawBadge("MEMORY UNIT 84"), transparent: true, toneMapped: false });
-  const badge = new THREE.Mesh(new THREE.PlaneGeometry(1.45, 0.36), badgeMaterial);
-  badge.position.set(-1.13, -0.44, 0.922);
-  group.add(badge);
+  const keyGeometry = new RoundedBoxGeometry(0.29, 0.075, 0.24, 2, 0.035);
+  for (let row = 0; row < 4; row += 1) {
+    const count = row === 3 ? 11 : 14;
+    for (let col = 0; col < count; col += 1) {
+      const key = new THREE.Mesh(keyGeometry, keyMaterial);
+      const rowWidth = (count - 1) * 0.35;
+      key.position.set(-rowWidth / 2 + col * 0.35, -0.94, -0.47 + row * 0.31);
+      key.castShadow = true;
+      group.add(key);
+    }
+  }
 
-  const neck = rounded(1.7, 0.58, 1.22, 0.12, beigeDark, 4);
-  neck.position.set(0, -1.02, -0.03);
-  group.add(neck);
+  const space = rounded(1.72, 0.075, 0.24, 0.035, keyMaterial, 2);
+  space.position.set(0.35, -0.94, 0.47);
+  group.add(space);
 
-  const base = rounded(4.2, 0.42, 2.15, 0.15, beige, 5);
-  base.position.set(0, -1.48, 0.25);
-  group.add(base);
+  const trackpad = rounded(2.25, 0.035, 0.95, 0.08, black, 4);
+  trackpad.position.set(0, -0.985, 1.25);
+  group.add(trackpad);
 
-  const port = rounded(0.62, 0.18, 0.07, 0.035, black, 3);
-  port.position.set(1.28, -1.46, 1.35);
+  const trackpadLine = new THREE.Mesh(new THREE.PlaneGeometry(2.05, 0.75), new THREE.MeshBasicMaterial({
+    color: 0x0b2434,
+    transparent: true,
+    opacity: 0.72,
+    side: THREE.DoubleSide,
+  }));
+  trackpadLine.rotation.x = -Math.PI / 2;
+  trackpadLine.position.set(0, -0.963, 1.25);
+  group.add(trackpadLine);
+
+  const portFrame = rounded(0.09, 0.24, 0.84, 0.035, metal, 3);
+  portFrame.position.set(2.99, -1.18, 0.43);
+  group.add(portFrame);
+
+  const port = rounded(0.105, 0.145, 0.62, 0.025, black, 3);
+  port.position.set(3.045, -1.18, 0.43);
   port.name = "usb-port";
   group.add(port);
 
-  const portInner = rounded(0.48, 0.095, 0.02, 0.02, metal, 2);
-  portInner.position.set(1.28, -1.46, 1.395);
-  group.add(portInner);
+  const portLight = rounded(0.11, 0.025, 0.66, 0.01, cyan, 2);
+  portLight.position.set(3.055, -1.29, 0.43);
+  group.add(portLight);
 
   portAnchor = new THREE.Object3D();
-  portAnchor.position.set(1.28, -1.46, 2.08);
-  portAnchor.rotation.x = Math.PI / 2;
+  portAnchor.position.set(4.08, -1.18, 0.43);
+  portAnchor.rotation.y = Math.PI / 2;
   group.add(portAnchor);
 
-  const keyboard = new THREE.Group();
-  const keyboardCase = rounded(5.05, 0.28, 1.9, 0.15, beige, 5);
-  keyboardCase.position.y = -0.08;
-  keyboard.add(keyboardCase);
-
-  const keyMaterial = createMaterial(0x343631, 0.82, 0.02);
-  const keyGeometry = new RoundedBoxGeometry(0.28, 0.13, 0.26, 2, 0.035);
-  for (let row = 0; row < 4; row += 1) {
-    const count = row === 3 ? 10 : 13;
-    for (let col = 0; col < count; col += 1) {
-      const key = new THREE.Mesh(keyGeometry, keyMaterial);
-      const rowWidth = (count - 1) * 0.34;
-      key.position.set(-rowWidth / 2 + col * 0.34, 0.11, -0.55 + row * 0.37);
-      key.castShadow = true;
-      keyboard.add(key);
-    }
-  }
-  const space = rounded(1.65, 0.13, 0.26, 0.035, keyMaterial, 2);
-  space.position.set(0.45, 0.11, 0.56);
-  keyboard.add(space);
-  keyboard.position.set(0, -1.72, 1.55);
-  keyboard.rotation.x = -0.08;
-  group.add(keyboard);
-
-  group.position.set(0.9, terminalRestY, 0);
+  group.position.set(0.65, terminalRestY, 0.2);
   return group;
 }
 
@@ -287,9 +286,15 @@ function buildUsb(index) {
   group.name = `drive-${index}`;
   group.userData.projectIndex = index;
 
-  const bodyMaterial = createMaterial(new THREE.Color(project.accent).multiplyScalar(0.55), 0.6, 0.15);
-  const darkMaterial = createMaterial(0x151914, 0.72, 0.12);
-  const metalMaterial = createMaterial(0x9aa09a, 0.28, 0.88);
+  const accent = new THREE.Color(project.accent);
+  const bodyMaterial = new THREE.MeshStandardMaterial({
+    color: accent.clone().multiplyScalar(0.45),
+    emissive: accent.clone().multiplyScalar(0.16),
+    roughness: 0.38,
+    metalness: 0.52,
+  });
+  const darkMaterial = createMaterial(0x03101a, 0.54, 0.42);
+  const metalMaterial = createMaterial(0x8aa9b7, 0.24, 0.92);
 
   const body = rounded(0.76, 0.24, 1.32, 0.1, bodyMaterial, 4);
   body.position.z = 0.15;
@@ -312,7 +317,7 @@ function buildUsb(index) {
   group.add(inner);
 
   const label = canvasTexture(256, 256, (ctx, width, height) => {
-    ctx.fillStyle = "#11150f";
+    ctx.fillStyle = "#020b14";
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = project.accent;
     ctx.font = "800 108px Arial, sans-serif";
@@ -338,25 +343,108 @@ function buildUsb(index) {
 function addWorldDetails() {
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(30, 22),
-    new THREE.MeshStandardMaterial({ color: 0x070a08, roughness: 0.92, metalness: 0.05 }),
+    new THREE.MeshStandardMaterial({ color: 0x020711, roughness: 0.86, metalness: 0.14 }),
   );
   floor.rotation.x = -Math.PI / 2;
-  floor.position.set(0, -2.18, -1.5);
+  floor.position.set(0, -1.72, -1.5);
   floor.receiveShadow = true;
   scene.add(floor);
 
-  const grid = new THREE.GridHelper(24, 24, 0x25321e, 0x141a13);
-  grid.position.set(0, -2.16, -2);
-  grid.material.opacity = 0.24;
+  const grid = new THREE.GridHelper(24, 28, 0x006fb3, 0x07233b);
+  grid.position.set(0, -1.7, -2);
+  grid.material.opacity = 0.3;
   grid.material.transparent = true;
   scene.add(grid);
 
-  const backRing = new THREE.Mesh(
-    new THREE.TorusGeometry(4.8, 0.012, 8, 150),
-    new THREE.MeshBasicMaterial({ color: 0xbaff39, transparent: true, opacity: 0.12 }),
+  const tank = new THREE.Group();
+  tank.position.set(0.65, 1.05, -3.15);
+
+  const glass = new THREE.Mesh(
+    new THREE.CylinderGeometry(2.48, 2.48, 6.2, 64, 1, true),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x0b6c96,
+      transparent: true,
+      opacity: 0.075,
+      roughness: 0.12,
+      metalness: 0.05,
+      transmission: 0.28,
+      side: THREE.DoubleSide,
+    }),
   );
-  backRing.position.set(0.8, 0.6, -2.1);
-  scene.add(backRing);
+  tank.add(glass);
+
+  const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x00d9ff, transparent: true, opacity: 0.34, toneMapped: false });
+  for (const y of [-3.08, 3.08]) {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(2.48, 0.045, 10, 96), ringMaterial);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = y;
+    tank.add(ring);
+  }
+  scene.add(tank);
+
+  neuralCore = new THREE.Group();
+  neuralCore.position.set(0.65, 2.82, 0.05);
+  const brainMaterial = new THREE.MeshStandardMaterial({
+    color: 0x2cbfff,
+    emissive: 0x007db5,
+    emissiveIntensity: 2.8,
+    roughness: 0.5,
+    metalness: 0.08,
+    transparent: true,
+    opacity: 0.96,
+  });
+  const brainWire = new THREE.MeshBasicMaterial({ color: 0xc0f7ff, wireframe: true, transparent: true, opacity: 0.78, toneMapped: false });
+  for (const side of [-1, 1]) {
+    const half = new THREE.Mesh(new THREE.IcosahedronGeometry(0.77, 2), brainMaterial);
+    half.position.x = side * 0.43;
+    half.scale.set(0.82, 0.7, 1.05);
+    neuralCore.add(half);
+    const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(0.82, 2), brainWire);
+    wire.position.x = side * 0.43;
+    wire.scale.set(0.82, 0.7, 1.05);
+    neuralCore.add(wire);
+  }
+  const neuralHalo = new THREE.Mesh(
+    new THREE.TorusGeometry(1.35, 0.018, 8, 96),
+    new THREE.MeshBasicMaterial({ color: 0x00d9ff, transparent: true, opacity: 0.62, toneMapped: false }),
+  );
+  neuralHalo.rotation.x = Math.PI / 2;
+  neuralCore.add(neuralHalo);
+  neuralCore.add(new THREE.PointLight(0x00bfff, 14, 7, 2));
+  scene.add(neuralCore);
+
+  const tendrilMaterial = new THREE.LineBasicMaterial({ color: 0x00aee8, transparent: true, opacity: 0.4, toneMapped: false });
+  const tendrilTargets = [
+    [-2.1, -1.6, -0.2], [-1.2, -2.5, 0.2], [0, -2.8, -0.1],
+    [1.25, -2.45, 0.25], [2.15, -1.55, -0.15],
+  ];
+  tendrilTargets.forEach(([x, y, z], index) => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0.65 + (index - 2) * 0.18, 2.9, -2.6),
+      new THREE.Vector3(0.65 + x * 0.35, 1.2, -2.8 + z),
+      new THREE.Vector3(0.65 + x, y + 1.05, -3.15 + z),
+    ]);
+    const points = curve.getPoints(40);
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), tendrilMaterial));
+  });
+
+  const particlePositions = [];
+  for (let i = 0; i < 180; i += 1) {
+    const angle = i * 2.39996;
+    const radius = 3.2 + (i % 13) * 0.22;
+    particlePositions.push(
+      Math.cos(angle) * radius + 0.65,
+      -1.2 + (i % 29) * 0.22,
+      -3.5 + Math.sin(angle) * radius * 0.42,
+    );
+  }
+  const particleGeometry = new THREE.BufferGeometry();
+  particleGeometry.setAttribute("position", new THREE.Float32BufferAttribute(particlePositions, 3));
+  dataField = new THREE.Points(
+    particleGeometry,
+    new THREE.PointsMaterial({ color: 0x3edfff, size: 0.025, transparent: true, opacity: 0.5, toneMapped: false }),
+  );
+  scene.add(dataField);
 }
 
 function setupScene() {
@@ -377,14 +465,14 @@ function setupScene() {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x050706, 0.035);
+  scene.fog = new THREE.FogExp2(0x01050d, 0.045);
   camera = new THREE.PerspectiveCamera(34, shell.clientWidth / shell.clientHeight, 0.1, 100);
   camera.position.set(0, 1.1, 13.3);
   camera.lookAt(0.45, 0.3, 0);
 
-  scene.add(new THREE.HemisphereLight(0xded6be, 0x050706, 1.6));
+  scene.add(new THREE.HemisphereLight(0x78dcff, 0x01040a, 1.7));
 
-  const key = new THREE.DirectionalLight(0xfff2cf, 3.4);
+  const key = new THREE.DirectionalLight(0xa4edff, 3.6);
   key.position.set(-5, 8, 8);
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
@@ -392,12 +480,12 @@ function setupScene() {
   key.shadow.camera.far = 25;
   scene.add(key);
 
-  const edge = new THREE.SpotLight(0xbaff39, 38, 22, 0.6, 0.7, 1.5);
+  const edge = new THREE.SpotLight(0x008cff, 44, 22, 0.6, 0.7, 1.5);
   edge.position.set(6, 3, 5);
   edge.target.position.set(0, 0, 0);
   scene.add(edge, edge.target);
 
-  const fill = new THREE.PointLight(0x6aa5ff, 8, 12, 2);
+  const fill = new THREE.PointLight(0x00d9ff, 12, 14, 2);
   fill.position.set(-5, 1, 2);
   scene.add(fill);
 
@@ -405,11 +493,11 @@ function setupScene() {
   scene.add(terminal);
 
   const desktopPositions = [
-    [-3.35, 2.05, -0.65],
-    [4.0, 2.22, -0.8],
-    [-3.75, -0.05, -0.15],
-    [4.25, 0.05, -0.35],
-    [0.75, 4.05, -1.1],
+    [-3.65, 1.85, -0.55],
+    [4.1, 2.05, -0.7],
+    [-3.95, -0.05, -0.1],
+    [4.3, -0.05, -0.25],
+    [-2.15, 3.72, -0.85],
   ];
 
   usbDrives = projects.map((project, index) => {
@@ -548,6 +636,8 @@ function selectProject(index) {
       toPosition: targetPosition,
       toRotation: new THREE.Euler().setFromQuaternion(targetQuaternion, "XYZ"),
       onComplete: () => {
+        terminal.attach(drive);
+        drive.userData.inserted = true;
         setScreenProject(projects[index]);
         updateExternalAudio(projects[index]);
         playBootChime(index);
@@ -570,6 +660,10 @@ function selectProject(index) {
 function returnDrive(index, onComplete = () => {}) {
   const drive = usbDrives[index];
   if (!drive) return onComplete();
+  if (drive.userData.inserted) {
+    scene.attach(drive);
+    drive.userData.inserted = false;
+  }
   insertion = {
     index,
     start: performance.now(),
@@ -658,10 +752,10 @@ function updateMarkers() {
 function updateScreenHit() {
   if (!screenMesh || screenHit.hidden) return;
   const corners = [
-    new THREE.Vector3(-1.7, -1.04, 0.04),
-    new THREE.Vector3(1.7, -1.04, 0.04),
-    new THREE.Vector3(1.7, 1.04, 0.04),
-    new THREE.Vector3(-1.7, 1.04, 0.04),
+    new THREE.Vector3(-2.36, -1.28, 0.04),
+    new THREE.Vector3(2.36, -1.28, 0.04),
+    new THREE.Vector3(2.36, 1.28, 0.04),
+    new THREE.Vector3(-2.36, 1.28, 0.04),
   ].map((corner) => screenMesh.localToWorld(corner).project(camera));
   const xs = corners.map((corner) => (corner.x * 0.5 + 0.5) * shell.clientWidth);
   const ys = corners.map((corner) => (-corner.y * 0.5 + 0.5) * shell.clientHeight);
@@ -763,6 +857,16 @@ function animate(now) {
   terminal.rotation.x = currentPitch;
   terminal.rotation.y = reducedMotion.matches ? 0 : pointerX * 0.025;
   terminal.position.y = terminalRestY + Math.sin(elapsed * 0.65) * (reducedMotion.matches ? 0 : 0.025);
+
+  if (neuralCore) {
+    const pulse = reducedMotion.matches ? 1 : 1 + Math.sin(elapsed * 1.9) * 0.035;
+    neuralCore.scale.setScalar(pulse);
+    neuralCore.rotation.y = Math.sin(elapsed * 0.28) * 0.16;
+    neuralCore.position.y = 2.82 + Math.sin(elapsed * 0.72) * (reducedMotion.matches ? 0 : 0.08);
+  }
+  if (dataField && !reducedMotion.matches) {
+    dataField.rotation.y = elapsed * 0.018;
+  }
 
   usbDrives.forEach((drive, index) => {
     if (insertion?.index === index || selectedIndex === index) return;

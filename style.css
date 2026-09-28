@@ -1,12 +1,12 @@
 :root {
   color-scheme: dark;
-  --ink: #050706;
-  --ink-soft: #0b0f0c;
-  --paper: #e8e2ce;
-  --muted: #918f84;
-  --acid: #bcff38;
-  --acid-soft: rgba(188, 255, 56, 0.2);
-  --line: rgba(232, 226, 206, 0.24);
+  --ink: #01050d;
+  --ink-soft: #03111d;
+  --paper: #dff8ff;
+  --muted: #7895a3;
+  --acid: #00d9ff;
+  --acid-soft: rgba(0, 217, 255, 0.2);
+  --line: rgba(135, 228, 255, 0.24);
   --pitch-progress: 0;
   font-family: "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
   font-synthesis: none;
@@ -66,7 +66,7 @@ button {
   height: 4.75rem;
   padding: 0 2.1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-  background: linear-gradient(180deg, rgba(5, 7, 6, 0.86), rgba(5, 7, 6, 0));
+  background: linear-gradient(180deg, rgba(1, 5, 13, 0.9), rgba(1, 5, 13, 0));
   backdrop-filter: blur(5px);
 }
 
@@ -85,7 +85,7 @@ button {
   width: 0.78rem;
   aspect-ratio: 1;
   background: var(--acid);
-  box-shadow: 0 0 1rem rgba(188, 255, 56, 0.45);
+  box-shadow: 0 0 1.2rem rgba(0, 217, 255, 0.65);
 }
 
 .wordmark-dim {
@@ -160,8 +160,29 @@ button {
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(circle at 50% 48%, rgba(86, 96, 69, 0.1), transparent 31%),
-    linear-gradient(180deg, #050706 0%, #030504 100%);
+    radial-gradient(circle at 54% 36%, rgba(0, 151, 255, 0.14), transparent 28%),
+    radial-gradient(circle at 50% 82%, rgba(0, 63, 128, 0.12), transparent 42%),
+    linear-gradient(180deg, #01050d 0%, #020812 100%);
+}
+
+.stage-sticky::after {
+  content: "";
+  position: absolute;
+  z-index: 19;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0,
+    transparent 4px,
+    rgba(0, 217, 255, 0.075) 5px
+  );
+  animation: scan-drift 9s linear infinite;
+}
+
+@keyframes scan-drift {
+  to { transform: translateY(15px); }
 }
 
 .ambient-glow {
@@ -172,9 +193,9 @@ button {
   width: min(74vw, 68rem);
   aspect-ratio: 1.5;
   transform: translate(-50%, -50%);
-  border: 1px solid rgba(188, 255, 56, 0.05);
+  border: 1px solid rgba(0, 217, 255, 0.08);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(188, 255, 56, 0.055), transparent 65%);
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.09), transparent 65%);
   filter: blur(18px);
 }
 
@@ -210,7 +231,8 @@ button {
 
 h1 {
   margin: 0;
-  color: #f0ebdc;
+  color: #e5faff;
+  text-shadow: 0 0 2rem rgba(0, 174, 255, 0.16);
   font-size: clamp(2.8rem, 5.6vw, 6.35rem);
   font-weight: 750;
   line-height: 0.86;
@@ -219,7 +241,7 @@ h1 {
 
 h1 em {
   color: transparent;
-  -webkit-text-stroke: 1px rgba(232, 226, 206, 0.62);
+  -webkit-text-stroke: 1px rgba(67, 206, 255, 0.72);
   font-style: normal;
   font-weight: 400;
 }
@@ -309,7 +331,7 @@ h1 em {
 .project-marker.is-active .marker-card {
   border-color: var(--acid);
   color: var(--acid);
-  background: rgba(188, 255, 56, 0.08);
+  background: rgba(0, 217, 255, 0.11);
 }
 
 .marker-left {
@@ -345,7 +367,7 @@ h1 em {
   height: 5px;
   border-radius: 50%;
   background: var(--acid);
-  box-shadow: 0 0 0.6rem rgba(188, 255, 56, 0.7);
+  box-shadow: 0 0 0.75rem rgba(0, 217, 255, 0.8);
   transform: translateY(-50%);
 }
 
@@ -370,9 +392,9 @@ h1 em {
   align-items: center;
   gap: 0.65rem;
   padding: 0.55rem 0.65rem;
-  border: 1px solid rgba(232, 226, 206, 0.2);
-  background: rgba(5, 7, 6, 0.92);
-  box-shadow: 0 0.45rem 1.5rem rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(0, 217, 255, 0.34);
+  background: rgba(1, 8, 18, 0.97);
+  box-shadow: 0 0.45rem 1.5rem rgba(0, 20, 38, 0.64);
   backdrop-filter: blur(8px);
   text-align: left;
   transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 180ms ease;
@@ -380,8 +402,8 @@ h1 em {
 
 .project-marker:hover .marker-card,
 .project-marker:focus-visible .marker-card {
-  border-color: rgba(188, 255, 56, 0.8);
-  background: rgba(188, 255, 56, 0.08);
+  border-color: rgba(0, 217, 255, 0.9);
+  background: rgba(0, 217, 255, 0.11);
   transform: translateY(-2px);
 }
 
@@ -481,7 +503,7 @@ h1 em {
   top: 50%;
   width: min(25rem, 80vw);
   padding: 2rem;
-  border: 1px solid rgba(188, 255, 56, 0.35);
+  border: 1px solid rgba(0, 217, 255, 0.42);
   background: rgba(8, 12, 9, 0.88);
   transform: translate(-50%, -50%);
   text-align: center;
@@ -513,9 +535,9 @@ h1 em {
   padding: 6rem 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background:
-    linear-gradient(rgba(188, 255, 56, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(188, 255, 56, 0.035) 1px, transparent 1px),
-    #050706;
+    linear-gradient(rgba(0, 217, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 217, 255, 0.045) 1px, transparent 1px),
+    #01050d;
   background-size: 48px 48px;
   text-align: center;
 }
@@ -620,6 +642,8 @@ h1 em {
   .marker-card {
     min-width: auto;
     padding: 0.42rem 0.5rem;
+    border-color: rgba(0, 217, 255, 0.58);
+    background: rgba(1, 10, 22, 0.98);
   }
 
   .marker-card > span {
