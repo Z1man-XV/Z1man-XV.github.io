@@ -289,6 +289,7 @@ h1 em {
 
 .scene-shell {
   position: absolute;
+
   z-index: auto;
 
   left:0;
@@ -300,10 +301,9 @@ h1 em {
 
   overflow:hidden;
 
-  opacity: calc(var(--pitch-progress) + 0.15);
+  opacity:1;
 
-  transform:
-  translateY(calc(120px - var(--pitch-progress) * 120px));
+  transform:none;
 }
 
 #scene-canvas {
