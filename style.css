@@ -161,7 +161,13 @@ button {
   background:
     radial-gradient(circle at 54% 36%, rgba(0, 151, 255, 0.14), transparent 28%),
     radial-gradient(circle at 50% 82%, rgba(0, 63, 128, 0.12), transparent 42%),
-    linear-gradient(180deg, #01050d 0%, #020812 100%);
+    linear-gradient(
+  180deg,
+  #01050d 0%,
+  #01050d 35%,
+  #020812 65%,
+  #00030a 100%
+);
 }
 
 .stage-sticky::after {
@@ -210,10 +216,18 @@ button {
 
 .intro-copy {
   position: absolute;
-  z-index: 4;
-  left: clamp(1.25rem, 4vw, 4rem);
-  top: 5rem;
-  width: min(29rem, 37vw);
+  z-index: 10;
+
+  top: 12vh;
+  left: 50%;
+
+  width: 80%;
+  max-width: 900px;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+
   pointer-events: none;
 }
 
@@ -232,7 +246,7 @@ h1 {
   margin: 0;
   color: #e5faff;
   text-shadow: 0 0 2rem rgba(0, 174, 255, 0.16);
-  font-size: clamp(2.8rem, 5.6vw, 6.35rem);
+  font-size: clamp(3.5rem, 8vw, 8rem);
   font-weight: 750;
   line-height: 0.86;
   letter-spacing: -0.065em;
@@ -276,11 +290,20 @@ h1 em {
 .scene-shell {
   position: absolute;
   z-index: auto;
+
   left:0;
   right:0;
-  top:20rem;
+
+  top:45vh;
+
   height:70vh;
+
   overflow:hidden;
+
+  opacity: calc(var(--pitch-progress) + 0.15);
+
+  transform:
+  translateY(calc(120px - var(--pitch-progress) * 120px));
 }
 
 #scene-canvas {
