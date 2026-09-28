@@ -39,6 +39,7 @@ let usbDrives = [];
 let screenMesh;
 let portAnchor;
 let dataField;
+let floorMesh;
 let screenTexture;
 let videoElement;
 let videoTexture;
@@ -340,17 +341,17 @@ function buildUsb(index) {
 }
 
 function addWorldDetails() {
-  const floor = new THREE.Mesh(
+  floorMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(30, 22),
-    new THREE.MeshStandardMaterial({ color: 0x020711, roughness: 0.86, metalness: 0.14 }),
+    new THREE.MeshStandardMaterial({ color: 0x03173d, roughness: 0.86, metalness: 0.14, transparent: true }),
   );
-  floor.rotation.x = -Math.PI / 2;
-  floor.position.set(0, -1.72, -1.5);
-  floor.receiveShadow = true;
-  scene.add(floor);
+  floorMesh.rotation.x = -Math.PI / 2;
+  floorMesh.position.set(0, -2.08, -1.5);
+  floorMesh.receiveShadow = true;
+  scene.add(floorMesh);
 
   const grid = new THREE.GridHelper(24, 28, 0x006fb3, 0x07233b);
-  grid.position.set(0, -1.7, -2);
+  grid.position.set(0, -2.06, -2);
   grid.material.opacity = 0.3;
   grid.material.transparent = true;
   scene.add(grid);
@@ -392,7 +393,7 @@ function setupScene() {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x01050d, 0.045);
+  scene.fog = new THREE.FogExp2(0x020b24, 0.045);
   camera = new THREE.PerspectiveCamera(34, shell.clientWidth / shell.clientHeight, 0.1, 100);
   camera.position.set(0, 1.1, 13.3);
   camera.lookAt(0.45, 0.3, 0);
@@ -426,14 +427,14 @@ function setupScene() {
         [4.05, 3.25, -0.7],
         [-4.35, -0.08, -0.1],
         [5.0, -0.12, -0.25],
-        [-2.45, 3.3, -0.85],
+        [2.5, 3.65, -0.85],
       ]
     : [
         [-3.85, 1.95, -0.55],
         [4.35, 2.28, -0.7],
         [-4.15, -0.05, -0.1],
         [4.55, -0.05, -0.25],
-        [-2.65, 3.28, -0.85],
+        [0.65, 3.62, -0.85],
       ];
 
   usbDrives = projects.map((project, index) => {
@@ -777,6 +778,7 @@ function resize() {
   camera.fov = width < 720 ? 43 : width < 1050 ? 39 : 34;
   camera.position.z = width < 720 ? 15.7 : width < 1050 ? 14.5 : 13.3;
   terminal.position.x = width < 720 ? 0 : 0.9;
+  if (floorMesh) floorMesh.material.opacity = width < 720 ? 0.08 : 1;
   camera.updateProjectionMatrix();
   updateScroll();
 }
@@ -824,6 +826,17 @@ markers.forEach((marker, index) => {
   marker.addEventListener("click", () => selectProject(index));
   marker.addEventListener("pointerenter", () => { hoveredDrive = index; });
   marker.addEventListener("pointerleave", () => { hoveredDrive = -1; });
+});
+
+document.querySelectorAll("[data-select-project]").forEach((control) => {
+  control.addEventListener("click", () => {
+    const index = Number(control.dataset.selectProject);
+    if (!Number.isInteger(index) || !projects[index]) return;
+    selectProject(index);
+    window.setTimeout(() => {
+      document.querySelector("#top")?.scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth" });
+    }, 120);
+  });
 });
 
 soundToggle.addEventListener("click", toggleSound);
