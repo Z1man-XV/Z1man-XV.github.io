@@ -46,7 +46,7 @@ button {
   left: 1rem;
   top: 1rem;
   padding: 0.75rem 1rem;
-  background: var(--acid);
+  var(--acid);
   color: var(--ink);
   transform: translateY(-180%);
   transition: transform 180ms ease;
@@ -159,15 +159,15 @@ button {
   overflow:hidden;
   isolation:isolate;
 
-  background:
-    radial-gradient(circle at 54% 36%, rgba(0, 151, 255, 0.14), transparent 28%),
-    radial-gradient(circle at 50% 82%, rgba(0, 63, 128, 0.12), transparent 42%),
+ background:
+    radial-gradient(circle at 54% 36%, rgba(0, 151, 255, 0.18), transparent 35%),
+    radial-gradient(circle at 50% 82%, rgba(0, 63, 128, 0.16), transparent 55%),
     linear-gradient(
       180deg,
       #01050d 0%,
-      #01050d 35%,
-      #020812 65%,
-      #00030a 100%
+      #01050d 70%,
+      #020812 95%,
+      #020812 100%
     );
 }
 }
