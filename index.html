@@ -1,103 +1,162 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="zh-CN">
 
 <head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
+  <title>Zeman | Portfolio</title>
 
-<meta charset="UTF-8">
-
-
-<title>
-Zeman | Portfolio
-</title>
-
-
-<link rel="stylesheet" href="style.css">
-
-
+  <link rel="stylesheet" href="style.css">
 </head>
-
-
 
 <body>
 
+  <main id="portfolio">
+
+    <header class="header">
+      <div class="title">
+        Zeman | Portfolio
+      </div>
+
+      <button id="soundButton" type="button">
+        SOUND ON
+      </button>
+    </header>
 
 
-<div id="portfolio">
+    <!-- 滚动控制区域 -->
+    <section id="scrollArea">
+
+      <div class="stickyScene">
+
+        <!-- Three.js 3D 场景 -->
+        <div id="scene"></div>
 
 
-<div class="title">
+        <!-- 五个 U 盘的文字标注 -->
+        <div id="usbLabels">
 
-Zeman | Portfolio
+          <button
+            class="usbLabel"
+            data-project="0"
+            type="button"
+          >
+            PROJECT 01
+          </button>
 
-</div>
+          <button
+            class="usbLabel"
+            data-project="1"
+            type="button"
+          >
+            PROJECT 02
+          </button>
 
+          <button
+            class="usbLabel"
+            data-project="2"
+            type="button"
+          >
+            PROJECT 03
+          </button>
 
+          <button
+            class="usbLabel"
+            data-project="3"
+            type="button"
+          >
+            PROJECT 04
+          </button>
 
-<div id="scene"></div>
+          <button
+            class="usbLabel"
+            data-project="4"
+            type="button"
+          >
+            PROJECT 05
+          </button>
 
-
-
-
-<!-- 游戏信息 -->
-
-<div class="info">
-
-
-<h2 id="gameName">
-
-GAME01
-
-</h2>
-
-
-<p>
-
-Insert Cartridge
-
-</p>
-
-
-</div>
-
-
-
-
-<button id="left">
-
-◀
-
-</button>
-
-
-
-<button id="right">
-
-▶
-
-</button>
+        </div>
 
 
+        <!-- 当前作品信息 -->
+        <div class="info">
 
-</div>
+          <p class="number">
+            PROJECT
+          </p>
+
+          <h1 id="projectName">
+            PROJECT 01
+          </h1>
+
+          <p id="projectDescription">
+            Insert USB Drive
+          </p>
+
+        </div>
 
 
+        <!-- 左右切换按钮 -->
+        <button
+          id="leftButton"
+          class="arrowButton"
+          type="button"
+          aria-label="上一个作品"
+        >
+          ◀
+        </button>
+
+        <button
+          id="rightButton"
+          class="arrowButton"
+          type="button"
+          aria-label="下一个作品"
+        >
+          ▶
+        </button>
 
 
-<script src="
-https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
-</script>
+        <!-- 状态文字 -->
+        <p id="status">
+          SELECT A USB DRIVE
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
 
 
+  <!-- 后续放入你的作品视频 -->
+  <video
+    id="projectVideo"
+    playsinline
+    loop
+    hidden
+  ></video>
 
-<script src="script.js"></script>
+
+  <!-- 后续放入你的声音 -->
+  <audio
+    id="projectAudio"
+    loop
+  ></audio>
 
 
+  <!-- Three.js -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+  ></script>
+
+  <!-- 网页功能 -->
+  <script src="script.js"></script>
 
 </body>
-
-
 
 </html>
