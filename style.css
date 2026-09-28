@@ -260,16 +260,18 @@ button {
   position: absolute;
   z-index: 4;
   left: clamp(1.25rem, 3.2vw, 3.5rem);
-  top: clamp(4.6rem, 8vh, 6.2rem);
+  top: clamp(3.85rem, 6vh, 4.8rem);
   width: min(40rem, 48vw);
   pointer-events: none;
+  transform-origin: left top;
+  will-change: opacity, transform, filter;
 }
 
 .kicker {
   display: flex;
   justify-content: space-between;
-  margin: 0 0 1.25rem;
-  padding-bottom: 0.65rem;
+  margin: 0 0 0.6rem;
+  padding-bottom: 0.45rem;
   border-bottom: 1px solid var(--line);
   color: rgba(225, 250, 255, 0.72);
   font: 600 0.66rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -1073,13 +1075,13 @@ h1 em {
 
   .intro-copy {
     left: 1rem;
-    top: 4.45rem;
+    top: 4.05rem;
     width: calc(100% - 2rem);
   }
 
   .kicker {
     width: min(100%, 22rem);
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.45rem;
   }
 
   h1 {

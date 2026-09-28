@@ -16,6 +16,8 @@ const projects = [
 ];
 
 const shell = document.querySelector("#scene-shell");
+const scrollStage = document.querySelector(".scroll-stage");
+const introCopy = document.querySelector(".intro-copy");
 const canvas = document.querySelector("#scene-canvas");
 const fallback = document.querySelector("#webgl-fallback");
 const markers = [...document.querySelectorAll(".project-marker")];
@@ -34,6 +36,7 @@ let renderer;
 let scene;
 let camera;
 let terminal;
+let lidGroup;
 let terminalRestY = -0.2;
 let usbDrives = [];
 let screenMesh;
@@ -51,6 +54,10 @@ let pointerX = 0;
 let pointerY = 0;
 let targetPitch = THREE.MathUtils.degToRad(4);
 let currentPitch = targetPitch;
+let targetLidClose = 0;
+let currentLidClose = 0;
+let targetRetreat = 0;
+let currentRetreat = 0;
 let scrollRatio = 0;
 let lastFrame = performance.now();
 let screenClickReady = false;
@@ -193,24 +200,29 @@ function buildTerminal() {
   const metal = createMaterial(0x6e96a8, 0.22, 0.9);
   const cyan = new THREE.MeshBasicMaterial({ color: 0x00d9ff, toneMapped: false });
 
+  lidGroup = new THREE.Group();
+  lidGroup.name = "laptop-lid";
+  lidGroup.position.set(0, -0.9, -0.98);
+  group.add(lidGroup);
+
   const lid = rounded(5.8, 3.55, 0.2, 0.16, shellMaterial, 6);
-  lid.position.set(0, 0.93, -1.02);
-  group.add(lid);
+  lid.position.set(0, 1.83, -0.04);
+  lidGroup.add(lid);
 
   const screenBezel = rounded(5.25, 3.03, 0.055, 0.1, black, 5);
-  screenBezel.position.set(0, 0.93, -0.9);
-  group.add(screenBezel);
+  screenBezel.position.set(0, 1.83, 0.08);
+  lidGroup.add(screenBezel);
 
   screenTexture = drawScreen();
   const screenMaterial = new THREE.MeshBasicMaterial({ map: screenTexture, toneMapped: false });
   screenMesh = rounded(4.86, 2.68, 0.025, 0.08, screenMaterial, 5);
-  screenMesh.position.set(0, 0.93, -0.865);
+  screenMesh.position.set(0, 1.83, 0.115);
   screenMesh.name = "screen";
-  group.add(screenMesh);
+  lidGroup.add(screenMesh);
 
   const cameraDot = new THREE.Mesh(new THREE.SphereGeometry(0.035, 12, 8), cyan);
-  cameraDot.position.set(0, 2.56, -0.89);
-  group.add(cameraDot);
+  cameraDot.position.set(0, 3.46, 0.09);
+  lidGroup.add(cameraDot);
 
   const hingeGeometry = new THREE.CylinderGeometry(0.12, 0.12, 2.15, 24);
   for (const x of [-1.65, 1.65]) {
@@ -434,7 +446,7 @@ function setupScene() {
         [4.35, 2.28, -0.7],
         [-4.15, -0.05, -0.1],
         [4.55, -0.05, -0.25],
-        [0.65, 3.62, -0.85],
+        [3.2, 3.55, -0.85],
       ];
 
   usbDrives = projects.map((project, index) => {
@@ -664,6 +676,7 @@ function projectToScreen(object) {
 }
 
 function updateMarkers() {
+  const markerReveal = THREE.MathUtils.smoothstep(scrollRatio, 0.055, 0.2);
   usbDrives.forEach((drive, index) => {
     const point = projectToScreen(drive);
     const marker = markers[index];
@@ -682,6 +695,7 @@ function updateMarkers() {
     }
     marker.style.setProperty("--marker-x", `${x.toFixed(1)}px`);
     marker.style.setProperty("--marker-y", `${y.toFixed(1)}px`);
+    marker.style.opacity = String(markerReveal * (marker.classList.contains("is-dimmed") ? 0.16 : 1));
     marker.style.visibility = point.visible ? "visible" : "hidden";
   });
 }
@@ -705,13 +719,18 @@ function updateScreenHit() {
 }
 
 function updateScroll() {
-  const section = document.querySelector(".scroll-stage");
-  const max = Math.max(1, section.offsetHeight - window.innerHeight);
-  const rect = section.getBoundingClientRect();
+  const max = Math.max(1, scrollStage.offsetHeight - window.innerHeight);
+  const rect = scrollStage.getBoundingClientRect();
   scrollRatio = THREE.MathUtils.clamp(-rect.top / max, 0, 1);
+  targetLidClose = THREE.MathUtils.smoothstep(scrollRatio, 0.05, 0.6);
+  targetRetreat = THREE.MathUtils.smoothstep(scrollRatio, 0.14, 0.82);
   const maxPitch = window.innerWidth < 720 ? 3 : 4;
   const minPitch = window.innerWidth < 720 ? -5 : -7;
   targetPitch = THREE.MathUtils.degToRad(THREE.MathUtils.lerp(maxPitch, minPitch, scrollRatio));
+  const titleExit = THREE.MathUtils.smoothstep(scrollRatio, 0.025, 0.3);
+  introCopy.style.opacity = String(1 - titleExit);
+  introCopy.style.transform = `translate3d(0, ${(-4.5 * titleExit).toFixed(3)}rem, 0) scale(${(1 - titleExit * 0.08).toFixed(3)})`;
+  introCopy.style.filter = `blur(${(titleExit * 5).toFixed(2)}px)`;
   const degrees = THREE.MathUtils.radToDeg(targetPitch);
   pitchReadout.textContent = `${degrees >= 0 ? "+" : ""}${degrees.toFixed(1)}°`;
   scrollProgress.style.transform = `scaleX(${scrollRatio})`;
@@ -777,7 +796,6 @@ function resize() {
   camera.aspect = width / height;
   camera.fov = width < 720 ? 43 : width < 1050 ? 39 : 34;
   camera.position.z = width < 720 ? 15.7 : width < 1050 ? 14.5 : 13.3;
-  terminal.position.x = width < 720 ? 0 : 0.9;
   if (floorMesh) floorMesh.material.opacity = width < 720 ? 0.08 : 1;
   camera.updateProjectionMatrix();
   updateScroll();
@@ -792,9 +810,18 @@ function animate(now) {
 
   const pitchEase = reducedMotion.matches ? 1 : 1 - Math.exp(-delta * 5.5);
   currentPitch = THREE.MathUtils.lerp(currentPitch, targetPitch, pitchEase);
+  currentLidClose = THREE.MathUtils.lerp(currentLidClose, targetLidClose, pitchEase);
+  currentRetreat = THREE.MathUtils.lerp(currentRetreat, targetRetreat, pitchEase);
+  lidGroup.rotation.x = THREE.MathUtils.lerp(0, THREE.MathUtils.degToRad(86), currentLidClose);
   terminal.rotation.x = currentPitch;
-  terminal.rotation.y = reducedMotion.matches ? 0 : pointerX * 0.012;
-  terminal.position.y = terminalRestY + Math.sin(elapsed * 0.65) * (reducedMotion.matches ? 0 : 0.025);
+  terminal.rotation.y = (reducedMotion.matches ? 0 : pointerX * 0.012) - currentRetreat * 0.12;
+  terminal.rotation.z = currentRetreat * 0.025;
+  const mobileLayout = window.innerWidth < 720;
+  terminal.position.x = THREE.MathUtils.lerp(mobileLayout ? 0 : 0.9, mobileLayout ? 0 : 2.15, currentRetreat);
+  terminal.position.y = terminalRestY + THREE.MathUtils.lerp(0, mobileLayout ? 1.1 : 1.35, currentRetreat)
+    + Math.sin(elapsed * 0.65) * (reducedMotion.matches ? 0 : 0.025) * (1 - currentRetreat);
+  terminal.position.z = THREE.MathUtils.lerp(0.2, -3.8, currentRetreat);
+  terminal.scale.setScalar(THREE.MathUtils.lerp(1, mobileLayout ? 0.54 : 0.5, currentRetreat));
 
   if (dataField && !reducedMotion.matches) {
     dataField.rotation.y = elapsed * 0.018;
@@ -808,7 +835,8 @@ function animate(now) {
     drive.position.x = drive.userData.home.x + Math.cos(elapsed * 0.48 + phase) * 0.07 * amount;
     drive.rotation.z = drive.userData.homeRotation.z + Math.sin(elapsed * 0.56 + phase) * 0.09 * amount;
     drive.rotation.y = drive.userData.homeRotation.y + Math.cos(elapsed * 0.38 + phase) * 0.08 * amount;
-    const scale = hoveredDrive === index ? 1.1 : 1;
+    const deviceReveal = THREE.MathUtils.lerp(0.35, 1, THREE.MathUtils.smoothstep(scrollRatio, 0.025, 0.2));
+    const scale = (hoveredDrive === index ? 1.1 : 1) * deviceReveal;
     drive.scale.lerp(new THREE.Vector3(scale, scale, scale), 1 - Math.exp(-delta * 10));
   });
 
