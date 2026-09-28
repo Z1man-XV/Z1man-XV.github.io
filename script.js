@@ -38,7 +38,6 @@ let terminalRestY = -0.2;
 let usbDrives = [];
 let screenMesh;
 let portAnchor;
-let neuralCore;
 let dataField;
 let screenTexture;
 let videoElement;
@@ -49,7 +48,7 @@ let hoveredDrive = -1;
 let locked = false;
 let pointerX = 0;
 let pointerY = 0;
-let targetPitch = THREE.MathUtils.degToRad(10);
+let targetPitch = THREE.MathUtils.degToRad(4);
 let currentPitch = targetPitch;
 let scrollRatio = 0;
 let lastFrame = performance.now();
@@ -355,78 +354,6 @@ function addWorldDetails() {
   grid.material.opacity = 0.3;
   grid.material.transparent = true;
   scene.add(grid);
-
-  const tank = new THREE.Group();
-  tank.position.set(0.65, 1.05, -3.15);
-
-  const glass = new THREE.Mesh(
-    new THREE.CylinderGeometry(2.48, 2.48, 6.2, 64, 1, true),
-    new THREE.MeshPhysicalMaterial({
-      color: 0x0b6c96,
-      transparent: true,
-      opacity: 0.075,
-      roughness: 0.12,
-      metalness: 0.05,
-      transmission: 0.28,
-      side: THREE.DoubleSide,
-    }),
-  );
-  tank.add(glass);
-
-  const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x00d9ff, transparent: true, opacity: 0.34, toneMapped: false });
-  for (const y of [-3.08, 3.08]) {
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(2.48, 0.045, 10, 96), ringMaterial);
-    ring.rotation.x = Math.PI / 2;
-    ring.position.y = y;
-    tank.add(ring);
-  }
-  scene.add(tank);
-
-  neuralCore = new THREE.Group();
-  neuralCore.position.set(0.65, 2.82, 0.05);
-  const brainMaterial = new THREE.MeshStandardMaterial({
-    color: 0x2cbfff,
-    emissive: 0x007db5,
-    emissiveIntensity: 2.8,
-    roughness: 0.5,
-    metalness: 0.08,
-    transparent: true,
-    opacity: 0.96,
-  });
-  const brainWire = new THREE.MeshBasicMaterial({ color: 0xc0f7ff, wireframe: true, transparent: true, opacity: 0.78, toneMapped: false });
-  for (const side of [-1, 1]) {
-    const half = new THREE.Mesh(new THREE.IcosahedronGeometry(0.77, 2), brainMaterial);
-    half.position.x = side * 0.43;
-    half.scale.set(0.82, 0.7, 1.05);
-    neuralCore.add(half);
-    const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(0.82, 2), brainWire);
-    wire.position.x = side * 0.43;
-    wire.scale.set(0.82, 0.7, 1.05);
-    neuralCore.add(wire);
-  }
-  const neuralHalo = new THREE.Mesh(
-    new THREE.TorusGeometry(1.35, 0.018, 8, 96),
-    new THREE.MeshBasicMaterial({ color: 0x00d9ff, transparent: true, opacity: 0.62, toneMapped: false }),
-  );
-  neuralHalo.rotation.x = Math.PI / 2;
-  neuralCore.add(neuralHalo);
-  neuralCore.add(new THREE.PointLight(0x00bfff, 14, 7, 2));
-  scene.add(neuralCore);
-
-  const tendrilMaterial = new THREE.LineBasicMaterial({ color: 0x00aee8, transparent: true, opacity: 0.4, toneMapped: false });
-  const tendrilTargets = [
-    [-2.1, -1.6, -0.2], [-1.2, -2.5, 0.2], [0, -2.8, -0.1],
-    [1.25, -2.45, 0.25], [2.15, -1.55, -0.15],
-  ];
-  tendrilTargets.forEach(([x, y, z], index) => {
-    const curve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0.65 + (index - 2) * 0.18, 2.9, -2.6),
-      new THREE.Vector3(0.65 + x * 0.35, 1.2, -2.8 + z),
-      new THREE.Vector3(0.65 + x, y + 1.05, -3.15 + z),
-    ]);
-    const points = curve.getPoints(40);
-    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), tendrilMaterial));
-  });
 
   const particlePositions = [];
   for (let i = 0; i < 180; i += 1) {
@@ -772,8 +699,8 @@ function updateScroll() {
   const max = Math.max(1, section.offsetHeight - window.innerHeight);
   const rect = section.getBoundingClientRect();
   scrollRatio = THREE.MathUtils.clamp(-rect.top / max, 0, 1);
-  const maxPitch = window.innerWidth < 720 ? 7 : 10;
-  const minPitch = window.innerWidth < 720 ? -8 : -12;
+  const maxPitch = window.innerWidth < 720 ? 3 : 4;
+  const minPitch = window.innerWidth < 720 ? -5 : -7;
   targetPitch = THREE.MathUtils.degToRad(THREE.MathUtils.lerp(maxPitch, minPitch, scrollRatio));
   const degrees = THREE.MathUtils.radToDeg(targetPitch);
   pitchReadout.textContent = `${degrees >= 0 ? "+" : ""}${degrees.toFixed(1)}°`;
@@ -855,15 +782,9 @@ function animate(now) {
   const pitchEase = reducedMotion.matches ? 1 : 1 - Math.exp(-delta * 5.5);
   currentPitch = THREE.MathUtils.lerp(currentPitch, targetPitch, pitchEase);
   terminal.rotation.x = currentPitch;
-  terminal.rotation.y = reducedMotion.matches ? 0 : pointerX * 0.025;
+  terminal.rotation.y = reducedMotion.matches ? 0 : pointerX * 0.012;
   terminal.position.y = terminalRestY + Math.sin(elapsed * 0.65) * (reducedMotion.matches ? 0 : 0.025);
 
-  if (neuralCore) {
-    const pulse = reducedMotion.matches ? 1 : 1 + Math.sin(elapsed * 1.9) * 0.035;
-    neuralCore.scale.setScalar(pulse);
-    neuralCore.rotation.y = Math.sin(elapsed * 0.28) * 0.16;
-    neuralCore.position.y = 2.82 + Math.sin(elapsed * 0.72) * (reducedMotion.matches ? 0 : 0.08);
-  }
   if (dataField && !reducedMotion.matches) {
     dataField.rotation.y = elapsed * 0.018;
   }
