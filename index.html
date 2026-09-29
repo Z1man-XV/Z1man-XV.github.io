@@ -14,7 +14,7 @@
       type="image/svg+xml"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2301050d'/%3E%3Crect x='10' y='10' width='44' height='34' rx='4' fill='%23081726' stroke='%2300d9ff' stroke-width='2'/%3E%3Ccircle cx='32' cy='27' r='9' fill='none' stroke='%2366e8ff' stroke-width='2'/%3E%3Cpath d='M27 24c2-5 8-5 10 0M27 30c2 5 8 5 10 0M7 49h50l-4 6H11z' fill='%230b2b43' stroke='%2300d9ff' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./style.css?v=20260928-6" />
+    <link rel="stylesheet" href="./style.css?v=20260929-8" />
     <script type="importmap">
       {
         "imports": {
@@ -117,6 +117,16 @@
         </header>
 
         <div class="project-grid">
+          <button class="archive-card archive-card-profile" type="button" data-open-profile aria-haspopup="dialog">
+            <span class="archive-number">00 / PROFILE</span>
+            <span class="profile-card-visual" aria-hidden="true">
+              <span class="profile-orbit"></span>
+              <span class="profile-monogram">Z</span>
+              <span class="profile-handle">@ZEMAN.ARCHIVE</span>
+            </span>
+            <span class="archive-copy"><b>个人简介</b><small>ABOUT / PROFILE / TOKYO</small></span>
+            <span class="profile-card-cta">OPEN PROFILE <i aria-hidden="true">↗</i></span>
+          </button>
           <button class="archive-card archive-card-blue" type="button" data-select-project="0">
             <span class="archive-number">01</span>
             <span class="archive-visual" aria-hidden="true">
@@ -148,14 +158,6 @@
               <span class="signal-rings"></span>
             </span>
             <span class="archive-copy"><b>空间影像</b><small>SPATIAL MEDIA / 2025</small></span>
-          </button>
-          <button class="archive-card archive-card-ice" type="button" data-select-project="4">
-            <span class="archive-number">05</span>
-            <span class="archive-visual" aria-hidden="true">
-              <span class="usb-glyph"><i></i><b>05</b></span>
-              <span class="signal-rings"></span>
-            </span>
-            <span class="archive-copy"><b>游戏原型</b><small>PLAYABLE PROTOTYPE / SOON</small></span>
           </button>
         </div>
       </section>
@@ -197,8 +199,42 @@
       </section>
     </main>
 
+    <section class="profile-screen" id="profile-screen" aria-hidden="true" hidden>
+      <button class="profile-back" id="profile-back" type="button" aria-label="返回作品列表">
+        <span aria-hidden="true">←</span> 返回
+      </button>
+
+      <div class="profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-dialog-title">
+        <header class="profile-dialog-bar">
+          <span class="profile-avatar" aria-hidden="true">Z</span>
+          <span class="profile-account"><b>zeman.archive</b><small>Tokyo, Japan · profile draft</small></span>
+          <span class="profile-dots" aria-hidden="true">•••</span>
+        </header>
+
+        <div class="profile-dialog-body">
+          <p class="profile-sequence">PROFILE / 00 — BASIC INFORMATION</p>
+          <h2 id="profile-dialog-title">はじめまして。<br /><span>あなたについて<br />教えてください。</span></h2>
+          <p class="profile-lead">基本情報は、あとからあなたの内容に差し替えられるようにしてあります。</p>
+
+          <dl class="profile-questions">
+            <div><dt>お名前は？</dt><dd>後ほど追加します。</dd></div>
+            <div><dt>今、どこで活動していますか？</dt><dd>後ほど追加します。</dd></div>
+            <div><dt>どんなデザインをつくっていますか？</dt><dd>後ほど追加します。</dd></div>
+            <div><dt>好きなことは何ですか？</dt><dd>後ほど追加します。</dd></div>
+            <div><dt>連絡先は？</dt><dd>後ほど追加します。</dd></div>
+          </dl>
+        </div>
+
+        <footer class="profile-dialog-footer">
+          <span aria-hidden="true">♡　⌁　↗</span>
+          <b>プロフィールを準備中です。</b>
+          <small>#portfolio #designer #tokyo</small>
+        </footer>
+      </div>
+    </section>
+
     <div class="corner-code" aria-hidden="true">SYS.05 / TOKYO</div>
 
-    <script type="module" src="./script.js?v=20260928-6"></script>
+    <script type="module" src="./script.js?v=20260929-8"></script>
   </body>
 </html>

@@ -30,6 +30,9 @@ const soundToggle = document.querySelector("#sound-toggle");
 const soundLabel = document.querySelector("#sound-label");
 const screenHit = document.querySelector("#screen-hit");
 const timeLabel = document.querySelector("#local-time");
+const profileScreen = document.querySelector("#profile-screen");
+const profileBack = document.querySelector("#profile-back");
+const profileOpeners = [...document.querySelectorAll("[data-open-profile]")];
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 let renderer;
@@ -42,7 +45,6 @@ let usbDrives = [];
 let screenMesh;
 let portAnchor;
 let dataField;
-let floorMesh;
 let screenTexture;
 let videoElement;
 let videoTexture;
@@ -64,6 +66,8 @@ let screenClickReady = false;
 let soundMuted = sessionStorage.getItem("portfolio-muted") === "true";
 let audioContext;
 let insertion = null;
+let profileReturnFocus = null;
+let profileCloseTimer = 0;
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2(99, 99);
@@ -353,21 +357,6 @@ function buildUsb(index) {
 }
 
 function addWorldDetails() {
-  floorMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(30, 22),
-    new THREE.MeshStandardMaterial({ color: 0x03173d, roughness: 0.86, metalness: 0.14, transparent: true }),
-  );
-  floorMesh.rotation.x = -Math.PI / 2;
-  floorMesh.position.set(0, -2.08, -1.5);
-  floorMesh.receiveShadow = true;
-  scene.add(floorMesh);
-
-  const grid = new THREE.GridHelper(24, 28, 0x006fb3, 0x07233b);
-  grid.position.set(0, -2.06, -2);
-  grid.material.opacity = 0.3;
-  grid.material.transparent = true;
-  scene.add(grid);
-
   const particlePositions = [];
   for (let i = 0; i < 180; i += 1) {
     const angle = i * 2.39996;
@@ -809,7 +798,6 @@ function resize() {
   camera.aspect = width / height;
   camera.fov = width < 720 ? 43 : width < 1050 ? 39 : 34;
   camera.position.z = width < 720 ? 15.7 : width < 1050 ? 14.5 : 13.3;
-  if (floorMesh) floorMesh.material.opacity = width < 720 ? 0.08 : 1;
   camera.updateProjectionMatrix();
   updateScroll();
 }
@@ -867,11 +855,37 @@ function animate(now) {
   renderer.render(scene, camera);
 }
 
+function openProfileScreen() {
+  window.clearTimeout(profileCloseTimer);
+  profileReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  profileScreen.hidden = false;
+  profileScreen.setAttribute("aria-hidden", "false");
+  document.body.classList.add("profile-is-open");
+  window.requestAnimationFrame(() => {
+    profileScreen.classList.add("is-open");
+    window.requestAnimationFrame(() => profileBack.focus({ preventScroll: true }));
+  });
+}
+
+function closeProfileScreen() {
+  if (profileScreen.hidden) return;
+  profileScreen.classList.remove("is-open");
+  profileScreen.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("profile-is-open");
+  profileCloseTimer = window.setTimeout(() => {
+    profileScreen.hidden = true;
+    profileReturnFocus?.focus({ preventScroll: true });
+  }, reducedMotion.matches ? 0 : 380);
+}
+
 markers.forEach((marker, index) => {
   marker.addEventListener("click", () => selectProject(index));
   marker.addEventListener("pointerenter", () => { hoveredDrive = index; });
   marker.addEventListener("pointerleave", () => { hoveredDrive = -1; });
 });
+
+profileOpeners.forEach((control) => control.addEventListener("click", openProfileScreen));
+profileBack.addEventListener("click", closeProfileScreen);
 
 document.querySelectorAll("[data-select-project]").forEach((control) => {
   control.addEventListener("click", () => {
@@ -904,7 +918,9 @@ canvas.addEventListener("pointerleave", () => {
 window.addEventListener("scroll", updateScroll, { passive: true });
 window.addEventListener("resize", resize, { passive: true });
 window.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") ejectProject();
+  if (event.key !== "Escape") return;
+  if (!profileScreen.hidden) closeProfileScreen();
+  else ejectProject();
 });
 
 function updateTime() {
