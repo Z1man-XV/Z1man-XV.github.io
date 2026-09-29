@@ -14,7 +14,7 @@
       type="image/svg+xml"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2301050d'/%3E%3Crect x='10' y='10' width='44' height='34' rx='4' fill='%23081726' stroke='%2300d9ff' stroke-width='2'/%3E%3Ccircle cx='32' cy='27' r='9' fill='none' stroke='%2366e8ff' stroke-width='2'/%3E%3Cpath d='M27 24c2-5 8-5 10 0M27 30c2 5 8 5 10 0M7 49h50l-4 6H11z' fill='%230b2b43' stroke='%2300d9ff' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./style.css?v=20260929-9" />
+    <link rel="stylesheet" href="./style.css?v=20260929-10" />
     <script type="importmap">
       {
         "imports": {
@@ -121,7 +121,7 @@
             <span class="archive-number">00 / PROFILE</span>
             <span class="profile-card-visual" aria-hidden="true">
               <span class="profile-orbit"></span>
-              <span class="profile-monogram">Z</span>
+              <img class="profile-card-photo" src="./assets/profile-zeman.jpg" alt="" />
               <span class="profile-handle">@ZEMAN.ARCHIVE</span>
             </span>
             <span class="archive-copy"><b>个人简介</b><small>ABOUT / PROFILE / TOKYO</small></span>
@@ -206,15 +206,23 @@
 
       <div class="profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-dialog-title">
         <header class="profile-dialog-bar">
-          <span class="profile-avatar" aria-hidden="true">Z</span>
+          <span class="profile-avatar" aria-hidden="true"><img src="./assets/profile-zeman.jpg" alt="" /></span>
           <span class="profile-account"><b>zeman.archive</b><small>Tokyo, Japan · personal profile</small></span>
           <span class="profile-dots" aria-hidden="true">•••</span>
         </header>
 
         <div class="profile-dialog-body">
-          <p class="profile-sequence">PROFILE / 00 — ABOUT ZEMAN</p>
-          <h2 id="profile-dialog-title">Zemanについて。<br /><span>深圳から東京へ。</span></h2>
-          <p class="profile-lead">中国・深圳に生まれ、現在は東京在住です。写真表現を学んだ経験を土台に、現在はゲームプログラミングを学んでいます。</p>
+          <div class="profile-intro">
+            <div class="profile-intro-copy">
+              <p class="profile-sequence">PROFILE / 00 — ABOUT ZEMAN</p>
+              <h2 id="profile-dialog-title">Zemanについて。<br /><span>深圳から東京へ。</span></h2>
+              <p class="profile-lead">中国・深圳に生まれ、現在は東京在住です。写真表現を学んだ経験を土台に、現在はゲームプログラミングを学んでいます。</p>
+            </div>
+            <figure class="profile-portrait">
+              <img src="./assets/profile-zeman.jpg" alt="Zemanのポートレート" />
+              <figcaption>PORTRAIT / ZEMAN</figcaption>
+            </figure>
+          </div>
 
           <dl class="profile-facts">
             <div>
@@ -246,6 +254,6 @@
 
     <div class="corner-code" aria-hidden="true">SYS.05 / TOKYO</div>
 
-    <script type="module" src="./script.js?v=20260929-9"></script>
+    <script type="module" src="./script.js?v=20260929-10"></script>
   </body>
 </html>
