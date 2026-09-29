@@ -505,7 +505,12 @@ function setMarkerState(index) {
     marker.classList.toggle("is-active", active);
     marker.classList.toggle("is-dimmed", index !== -1 && !active);
     marker.setAttribute("aria-pressed", String(active));
-    if (active) marker.setAttribute("aria-label", `已插入作品 ${projects[index].id}：${projects[index].title}`);
+    marker.setAttribute(
+      "aria-label",
+      active
+        ? `弹出作品 ${projects[markerIndex].id}：${projects[markerIndex].title}`
+        : `插入作品 ${projects[markerIndex].id}：${projects[markerIndex].title}`,
+    );
   });
 }
 
@@ -548,7 +553,11 @@ function updateExternalAudio(project) {
 }
 
 function selectProject(index) {
-  if (locked || index === selectedIndex || !usbDrives[index]) return;
+  if (locked || !usbDrives[index]) return;
+  if (index === selectedIndex) {
+    ejectProject();
+    return;
+  }
   locked = true;
   screenClickReady = false;
   screenHit.hidden = true;
@@ -778,9 +787,12 @@ function onCanvasPointerUp(event) {
   if (locked) return;
   onPointerMove(event);
   raycaster.setFromCamera(pointer, camera);
-  const hits = raycaster.intersectObjects([...usbDrives, screenMesh], true);
+  const hits = raycaster.intersectObjects([...usbDrives, terminal], true);
   const hit = hits[0]?.object;
-  if (!hit) return;
+  if (!hit) {
+    ejectProject();
+    return;
+  }
   if (hit.name === "screen" || hit === screenMesh) {
     openSelectedProject();
     return;
