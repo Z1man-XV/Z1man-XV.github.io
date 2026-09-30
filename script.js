@@ -2,17 +2,17 @@ import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 
 /*
- * 后续替换作品内容时，只需要改这里：
- * video 填视频路径（例如 "./media/work-01.mp4"）
- * audio 填独立声音路径；留空时使用视频自带声音
- * href 填点击电脑屏幕后要去的页面
+ * 作品内容を差し替える場合はここだけ変更します：
+ * video は動画パス（例："./media/work-01.mp4"）
+ * audio は独立した音声パス。空欄の場合は動画内の音声を使用
+ * href はコンピューター画面クリック時に移動するページ
  */
 const projects = [
-  { id: "01", title: "动态视觉", type: "MOTION STUDY", year: "2026", accent: "#00d9ff", video: "", audio: "", href: "" },
-  { id: "02", title: "品牌实验", type: "IDENTITY SYSTEM", year: "2026", accent: "#2aa8ff", video: "", audio: "", href: "" },
-  { id: "03", title: "交互叙事", type: "INTERACTIVE FILM", year: "2025", accent: "#70e6ff", video: "", audio: "", href: "" },
-  { id: "04", title: "空间影像", type: "SPATIAL MEDIA", year: "2025", accent: "#0077ff", video: "", audio: "", href: "" },
-  { id: "05", title: "游戏原型", type: "PLAYABLE PROTOTYPE", year: "SOON", accent: "#a5f2ff", video: "", audio: "", href: "" },
+  { id: "01", title: "Noctyra", type: "MOTION STUDY", year: "2026", accent: "#00d9ff", video: "./media/noctyra-promo-jp-30s.mp4", audio: "", href: "" },
+  { id: "02", title: "ブランド実験", type: "IDENTITY SYSTEM", year: "2026", accent: "#2aa8ff", video: "", audio: "", href: "" },
+  { id: "03", title: "インタラクティブ叙事", type: "INTERACTIVE FILM", year: "2025", accent: "#70e6ff", video: "", audio: "", href: "" },
+  { id: "04", title: "空間映像", type: "SPATIAL MEDIA", year: "2025", accent: "#0077ff", video: "", audio: "", href: "" },
+  { id: "05", title: "ゲームプロトタイプ", type: "PLAYABLE PROTOTYPE", year: "SOON", accent: "#a5f2ff", video: "", audio: "", href: "" },
 ];
 
 const shell = document.querySelector("#scene-shell");
@@ -485,11 +485,11 @@ function setScreenProject(project) {
       screenMesh.material.map = videoTexture;
       screenMesh.material.needsUpdate = true;
       videoElement.play().catch(() => {
-        updateStatus(`${project.title} 已就绪 · 点击屏幕播放`);
+        updateStatus(`${project.title} の準備ができました · 画面をクリックして再生`);
       });
     }, { once: true });
     videoElement.addEventListener("error", () => {
-      updateStatus(`${project.title} 的视频尚未连接 · 当前显示占位画面`);
+      updateStatus(`${project.title} の動画を接続できません · 現在はプレースホルダーを表示しています`);
     }, { once: true });
     videoElement.load();
   }
@@ -508,8 +508,8 @@ function setMarkerState(index) {
     marker.setAttribute(
       "aria-label",
       active
-        ? `弹出作品 ${projects[markerIndex].id}：${projects[markerIndex].title}`
-        : `插入作品 ${projects[markerIndex].id}：${projects[markerIndex].title}`,
+        ? `作品 ${projects[markerIndex].id}：${projects[markerIndex].title} を取り出す`
+        : `作品 ${projects[markerIndex].id}：${projects[markerIndex].title} を挿入`,
     );
   });
 }
@@ -565,7 +565,7 @@ function selectProject(index) {
   selectedIndex = index;
   setMarkerState(index);
   deviceReadout.textContent = `READING ${projects[index].id}`;
-  updateStatus(`正在插入作品 ${projects[index].id} · ${projects[index].title}`);
+  updateStatus(`作品 ${projects[index].id} を挿入中 · ${projects[index].title}`);
 
   const beginInsert = () => {
     const drive = usbDrives[index];
@@ -593,7 +593,7 @@ function selectProject(index) {
         updateExternalAudio(projects[index]);
         playBootChime(index);
         deviceReadout.textContent = `DEVICE ${projects[index].id}`;
-        updateStatus(`作品 ${projects[index].id} 已插入 · 点击屏幕可打开项目页`);
+        updateStatus(`作品 ${projects[index].id} を挿入しました · 画面をクリックするとプロジェクトを開けます`);
         screenClickReady = true;
         screenHit.hidden = false;
         locked = false;
@@ -638,10 +638,10 @@ function ejectProject() {
   setScreenProject(null);
   updateExternalAudio({ audio: "" });
   deviceReadout.textContent = "EJECTING";
-  updateStatus("正在退出当前作品");
+  updateStatus("現在の作品を取り出しています");
   returnDrive(oldIndex, () => {
     deviceReadout.textContent = "STANDBY";
-    updateStatus("系统待机 · 请选择一枚 U 盘");
+    updateStatus("システム待機中 · USBを一つ選択してください");
     locked = false;
   });
 }
@@ -750,7 +750,7 @@ function updateScroll() {
 
 function updateSoundUI() {
   soundToggle.setAttribute("aria-pressed", String(soundMuted));
-  soundLabel.textContent = soundMuted ? "声音：关" : "声音：开";
+  soundLabel.textContent = soundMuted ? "音声：オフ" : "音声：オン";
   if (videoElement) videoElement.muted = soundMuted;
   if (audioElement) audioElement.muted = soundMuted;
 }
@@ -769,9 +769,9 @@ function openSelectedProject() {
     window.location.href = project.href;
   } else if (videoElement?.paused) {
     videoElement.play().catch(() => {});
-    updateStatus(`${project.title} 正在播放 · 项目链接稍后接入`);
+    updateStatus(`${project.title} を再生中 · プロジェクトリンクは後で接続できます`);
   } else {
-    updateStatus(`${project.title} 的详情页接口已预留 · 在 script.js 中填写 href`);
+    updateStatus(`${project.title} の詳細ページ枠は準備済みです · script.js に href を設定してください`);
   }
 }
 
@@ -936,7 +936,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 function updateTime() {
-  timeLabel.textContent = new Intl.DateTimeFormat("zh-CN", {
+  timeLabel.textContent = new Intl.DateTimeFormat("ja-JP", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",

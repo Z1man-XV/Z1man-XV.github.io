@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta
       name="description"
-      content="以复古电脑和五枚浮动 U 盘为入口的交互式个人作品集。"
+      content="レトロなコンピューターと五つの浮遊USBを入口にしたインタラクティブな個人ポートフォリオ。"
     />
     <meta name="theme-color" content="#01050d" />
     <title>Neural Archive — Zeman Portfolio</title>
@@ -25,22 +25,22 @@
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#project-list">跳到作品列表</a>
+    <a class="skip-link" href="#project-list">作品リストへ移動</a>
 
-    <header class="site-header" aria-label="网站标题与声音设置">
-      <a class="wordmark" href="#top" aria-label="返回顶部">
+    <header class="site-header" aria-label="サイトタイトルとサウンド設定">
+      <a class="wordmark" href="#top" aria-label="トップへ戻る">
         <span class="wordmark-mark" aria-hidden="true"></span>
         <span>NEURAL<span class="wordmark-dim">/ARCHIVE</span></span>
       </a>
-      <nav class="site-nav" aria-label="页面导航">
+      <nav class="site-nav" aria-label="ページナビゲーション">
         <a href="#projects">PROJECTS</a>
         <a href="#memory-stack">MEMORY STACK</a>
       </nav>
       <div class="header-actions">
-        <span class="local-time" id="local-time" aria-label="本地时间">00:00:00</span>
+        <span class="local-time" id="local-time" aria-label="ローカル時間">00:00:00</span>
         <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false">
           <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span id="sound-label">声音：开</span>
+          <span id="sound-label">音声：オン</span>
         </button>
       </div>
     </header>
@@ -54,7 +54,7 @@
           <div class="intro-copy">
             <p class="kicker"><span>CONSCIOUSNESS ARCHIVE</span><span>NODE 05</span></p>
             <h1 id="page-title">Hello,<br /><em>I'm Zeman.</em></h1>
-            <p class="intro-note">选择一枚记忆载体，接入神经终端。向下滚动，观察意识容器。</p>
+            <p class="intro-note">記憶媒体を一つ選び、神経端末へ接続してください。下へスクロールすると意識コンテナを観察できます。</p>
           </div>
 
           <div class="system-readout" aria-hidden="true">
@@ -65,34 +65,34 @@
           <div class="scene-shell" id="scene-shell">
             <canvas id="scene-canvas" aria-hidden="true"></canvas>
 
-            <div class="project-markers" id="project-list" aria-label="作品 U 盘列表">
-              <button class="project-marker marker-left" type="button" data-project="0" aria-label="插入作品 01：动态视觉">
+            <div class="project-markers" id="project-list" aria-label="作品USBリスト">
+              <button class="project-marker marker-left" type="button" data-project="0" aria-label="作品 01：Noctyra を挿入">
                 <span class="marker-line" aria-hidden="true"></span>
-                <span class="marker-card"><b>01</b><span>动态视觉<small>MOTION / 2026</small></span></span>
+                <span class="marker-card"><b>01</b><span>Noctyra<small>MOTION / 2026</small></span></span>
               </button>
-              <button class="project-marker marker-right" type="button" data-project="1" aria-label="插入作品 02：品牌实验">
+              <button class="project-marker marker-right" type="button" data-project="1" aria-label="作品 02：ブランド実験 を挿入">
                 <span class="marker-line" aria-hidden="true"></span>
-                <span class="marker-card"><b>02</b><span>品牌实验<small>IDENTITY / 2026</small></span></span>
+                <span class="marker-card"><b>02</b><span>ブランド実験<small>IDENTITY / 2026</small></span></span>
               </button>
-              <button class="project-marker marker-left" type="button" data-project="2" aria-label="插入作品 03：交互叙事">
+              <button class="project-marker marker-left" type="button" data-project="2" aria-label="作品 03：インタラクティブ叙事 を挿入">
                 <span class="marker-line" aria-hidden="true"></span>
-                <span class="marker-card"><b>03</b><span>交互叙事<small>INTERACTIVE / 2025</small></span></span>
+                <span class="marker-card"><b>03</b><span>インタラクティブ叙事<small>INTERACTIVE / 2025</small></span></span>
               </button>
-              <button class="project-marker marker-right" type="button" data-project="3" aria-label="插入作品 04：空间影像">
+              <button class="project-marker marker-right" type="button" data-project="3" aria-label="作品 04：空間映像 を挿入">
                 <span class="marker-line" aria-hidden="true"></span>
-                <span class="marker-card"><b>04</b><span>空间影像<small>SPATIAL / 2025</small></span></span>
+                <span class="marker-card"><b>04</b><span>空間映像<small>SPATIAL / 2025</small></span></span>
               </button>
-              <button class="project-marker marker-top" type="button" data-project="4" aria-label="插入作品 05：游戏原型">
+              <button class="project-marker marker-top" type="button" data-project="4" aria-label="作品 05：ゲームプロトタイプ を挿入">
                 <span class="marker-line" aria-hidden="true"></span>
-                <span class="marker-card"><b>05</b><span>游戏原型<small>PLAY / SOON</small></span></span>
+                <span class="marker-card"><b>05</b><span>ゲームプロトタイプ<small>PLAY / SOON</small></span></span>
               </button>
             </div>
 
-            <div class="screen-hit" id="screen-hit" role="button" tabindex="0" aria-label="电脑屏幕，选择作品后可打开详情" hidden></div>
+            <div class="screen-hit" id="screen-hit" role="button" tabindex="0" aria-label="コンピューター画面。作品選択後に詳細を開けます" hidden></div>
 
             <div class="webgl-fallback" id="webgl-fallback" hidden>
-              <p>3D 终端暂时无法启动</p>
-              <span>仍可使用周围的作品按钮进行浏览。</span>
+              <p>3D端末を起動できません</p>
+              <span>周囲の作品ボタンから閲覧できます。</span>
             </div>
           </div>
 
@@ -102,7 +102,7 @@
             <b id="scroll-percent">00</b>
           </div>
 
-          <p class="interaction-status" id="interaction-status" aria-live="polite">系统待机 · 请选择一枚 U 盘</p>
+          <p class="interaction-status" id="interaction-status" aria-live="polite">システム待機中 · USBを一つ選択してください</p>
         </div>
       </section>
 
@@ -111,8 +111,8 @@
           <p><span>02 / SELECTED MEMORY</span><span>FIVE ARCHIVES</span></p>
           <h2 id="projects-title">Projects</h2>
           <div class="section-intro">
-            <b>五枚载体，五种意识切片。</b>
-            <span>点击任意项目，将对应 U 盘送回神经终端。</span>
+            <b>五つの媒体、五つの意識の断片。</b>
+            <span>任意のプロジェクトをクリックすると、対応するUSBが神経端末へ送られます。</span>
           </div>
         </header>
 
@@ -124,7 +124,7 @@
               <img class="profile-card-photo" src="./assets/profile-zeman.jpg" alt="" />
               <span class="profile-handle">@ZEMAN.ARCHIVE</span>
             </span>
-            <span class="archive-copy"><b>个人简介</b><small>ABOUT / PROFILE / TOKYO</small></span>
+            <span class="archive-copy"><b>プロフィール</b><small>ABOUT / PROFILE / TOKYO</small></span>
             <span class="profile-card-cta">OPEN PROFILE <i aria-hidden="true">↗</i></span>
           </button>
           <button class="archive-card archive-card-blue" type="button" data-select-project="0">
@@ -133,7 +133,7 @@
               <span class="usb-glyph"><i></i><b>01</b></span>
               <span class="signal-rings"></span>
             </span>
-            <span class="archive-copy"><b>动态视觉</b><small>MOTION STUDY / 2026</small></span>
+            <span class="archive-copy"><b>Noctyra</b><small>MOTION STUDY / 2026</small></span>
           </button>
           <button class="archive-card archive-card-cyan" type="button" data-select-project="1">
             <span class="archive-number">02</span>
@@ -141,7 +141,7 @@
               <span class="usb-glyph"><i></i><b>02</b></span>
               <span class="signal-rings"></span>
             </span>
-            <span class="archive-copy"><b>品牌实验</b><small>IDENTITY SYSTEM / 2026</small></span>
+            <span class="archive-copy"><b>ブランド実験</b><small>IDENTITY SYSTEM / 2026</small></span>
           </button>
           <button class="archive-card archive-card-electric" type="button" data-select-project="2">
             <span class="archive-number">03</span>
@@ -149,7 +149,7 @@
               <span class="usb-glyph"><i></i><b>03</b></span>
               <span class="signal-rings"></span>
             </span>
-            <span class="archive-copy"><b>交互叙事</b><small>INTERACTIVE FILM / 2025</small></span>
+            <span class="archive-copy"><b>インタラクティブ叙事</b><small>INTERACTIVE FILM / 2025</small></span>
           </button>
           <button class="archive-card archive-card-deep" type="button" data-select-project="3">
             <span class="archive-number">04</span>
@@ -157,7 +157,7 @@
               <span class="usb-glyph"><i></i><b>04</b></span>
               <span class="signal-rings"></span>
             </span>
-            <span class="archive-copy"><b>空间影像</b><small>SPATIAL MEDIA / 2025</small></span>
+            <span class="archive-copy"><b>空間映像</b><small>SPATIAL MEDIA / 2025</small></span>
           </button>
         </div>
       </section>
@@ -167,12 +167,12 @@
           <p><span>03 / DEVICE ARRAY</span><span>PRESS A MEMORY</span></p>
           <h2 id="memory-title">Memory<br />Stack</h2>
           <div class="section-intro">
-            <b>USB 不是装饰，而是作品的入口。</b>
-            <span>每一枚载体拥有独立编号、媒介类型与意识状态。</span>
+            <b>USBは装飾ではなく、作品への入口です。</b>
+            <span>それぞれの媒体には、独自の番号、メディアタイプ、意識状態があります。</span>
           </div>
         </header>
 
-        <div class="memory-stage" aria-label="五枚作品 U 盘矩阵">
+        <div class="memory-stage" aria-label="五つの作品USBマトリクス">
           <div class="memory-board">
             <button type="button" class="memory-key key-01" data-select-project="0"><b>01</b><span>MOTION</span></button>
             <button type="button" class="memory-key key-02" data-select-project="1"><b>02</b><span>IDENTITY</span></button>
@@ -192,16 +192,16 @@
         </div>
       </section>
 
-      <section class="end-panel" aria-label="作品浏览提示">
+      <section class="end-panel" aria-label="作品閲覧の案内">
         <p>END OF CONSCIOUSNESS / NODE 05</p>
         <h2>Choose a memory.<br /><span>Enter the archive.</span></h2>
-        <a href="#top">返回神经终端 <span aria-hidden="true">↗</span></a>
+        <a href="#top">神経端末へ戻る <span aria-hidden="true">↗</span></a>
       </section>
     </main>
 
     <section class="profile-screen" id="profile-screen" aria-hidden="true" hidden>
-      <button class="profile-back" id="profile-back" type="button" aria-label="返回作品列表">
-        <span aria-hidden="true">←</span> 返回
+      <button class="profile-back" id="profile-back" type="button" aria-label="作品リストへ戻る">
+        <span aria-hidden="true">←</span> 戻る
       </button>
 
       <div class="profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-dialog-title">
@@ -215,8 +215,8 @@
           <div class="profile-intro">
             <div class="profile-intro-copy">
               <p class="profile-sequence">PROFILE / 00 — ABOUT ZEMAN</p>
-              <h2 id="profile-dialog-title">Zemanについて。<br /><span>深圳から東京へ。</span></h2>
-              <p class="profile-lead">中国・深圳に生まれ、現在は東京在住です。写真表現を学んだ経験を土台に、現在はゲームプログラミングを学んでいます。</p>
+              <h2 id="profile-dialog-title">Zemanについて。<br /><span>深センから東京へ。</span></h2>
+              <p class="profile-lead">中国・深センに生まれ、現在は東京在住です。写真表現を学んだ経験を土台に、現在はゲームプログラミングを学んでいます。</p>
             </div>
             <figure class="profile-portrait">
               <img src="./assets/profile-zeman.jpg" alt="Zemanのポートレート" />
@@ -227,7 +227,7 @@
           <dl class="profile-facts">
             <div>
               <dt>出身地</dt>
-              <dd><b>中国・深圳</b><span>CHINA / SHENZHEN</span></dd>
+              <dd><b>中国・深セン</b><span>CHINA / SHENZHEN</span></dd>
             </div>
             <div>
               <dt>現在地</dt>
@@ -235,7 +235,7 @@
             </div>
             <div class="profile-education">
               <dt>2024</dt>
-              <dd><b>北京电影学院 现代创意媒体学院</b><span>古典写真専攻 · 卒業</span></dd>
+              <dd><b>北京電影学院 現代創意メディア学院</b><span>古典写真専攻 · 卒業</span></dd>
             </div>
             <div class="profile-education">
               <dt>2027.04</dt>
@@ -246,7 +246,7 @@
 
         <footer class="profile-dialog-footer">
           <span aria-hidden="true">♡　⌁　↗</span>
-          <b>深圳から東京へ。写真からゲームへ。</b>
+          <b>深センから東京へ。写真からゲームへ。</b>
           <small>#shenzhen #photography #gameprogramming #tokyo</small>
         </footer>
       </div>
